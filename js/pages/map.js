@@ -32,6 +32,8 @@ async function loadLeafletAssets() {
             });
         }
         _leafletReady = !!window.L;
+        // Leaflet guesses its marker image folder from the page URL, which is wrong here: point it at the CDN.
+        if (window.L && window.L.Icon && window.L.Icon.Default) window.L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
         return _leafletReady;
     } catch (e) {
         console.warn('Leaflet load failed', e);
@@ -219,7 +221,7 @@ root.addEventListener('click', function(ev){
 root.querySelectorAll("[data-ly]").forEach(function(c){c.onchange=function(){ly[c.dataset.ly]=c.checked?1:0;render()}});
 function chips(){$("rad").innerHTML=R.map(function(r){return '<button aria-pressed="'+(r===rad)+'" data-r="'+r+'">'+r+' km</button>'}).join("");$("rad").setAttribute("aria-label",T("radius"))}
 $("rad").onclick=function(e){var b=e.target.closest("button");if(b){rad=+b.dataset.r;chips();render()}};
-function opts(){var o=TOWNS.map(function(t,i){return '<option value="'+i+'">'+t[0]+'</option>'}).join("");[["town",0],["from",0],["to",5]].forEach(function(p){var e=$(p[0]),v=e.value||p[1];e.innerHTML=o;e.value=v})}
+function opts(){var o=TOWNS.map(function(t,i){return '<option value="'+i+'">'+t[0]+'</option>'}).join("");[["town",0],["from",0],["to",5]].forEach(function(p){var e=$(p[0]);if(!e)return;var v=e.value||p[1];e.innerHTML=o;e.value=v})}
 function updateLanguageButton(){
     var btn = root.getElementById('lg');
     if (btn) btn.textContent = lang == 'en' ? 'Kiswahili' : 'English';

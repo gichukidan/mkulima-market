@@ -1,3 +1,6 @@
+/* The auth page has a light design, so it pins its own colours instead of inheriting the
+   site-wide dark-mode text colour (which made the text invisible on the white cards). */
+:host{--ink:#1d2421;--mute:#5a655f;--forest:#164B35;--green:#2A8A5A;--orange:#D9620F;color-scheme:light}
 :host{display:block;background:linear-gradient(160deg,#eef6ee 0%,#f7f5ed 55%,#f5efe5 100%);color:var(--ink);font:500 17px/1.6 'Plus Jakarta Sans',system-ui,sans-serif} 
 *{box-sizing:border-box} 
 .auth-shell{min-height:100svh;padding:120px 0 72px} 

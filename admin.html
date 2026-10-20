@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mkulima Market Admin</title>
   <style>
+    .kb-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+    .kb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kb-form textarea, .kb-form input, .kb-form select, .role-select { width: 100%; font: inherit; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; }
+    .role-select { width: auto; padding: 6px 8px; }
+    .role-select option, .kb-form select option { color: #111; }
+    @media (max-width: 900px) { .kb-grid, .kb-row { grid-template-columns: 1fr; } }
     :root {
       --bg: #071a17;
       --bg-soft: #0d2a24;
@@ -391,7 +397,7 @@
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Password</th>
+                <th>Phone</th>
                 <th>Role</th>
                 <th>Joined</th>
                 <th>Action</th>
@@ -447,6 +453,38 @@
         </div>
       </div>
     </div>
+
+    <div class="panel" style="margin-top: 24px;" id="kbPanel">
+      <h3>Knowledge base (used by Ask Mkulima AI)</h3>
+      <div class="panel-body">
+        <p class="small muted">Ask Mkulima AI searches these articles before giving advice and names the article it used. Keep them accurate. Unpublished articles are hidden from the AI.</p>
+        <div class="kb-grid">
+          <div>
+            <table>
+              <thead><tr><th>Title</th><th>Lang</th><th>Category</th><th>Published</th><th>Action</th></tr></thead>
+              <tbody id="kbTable"></tbody>
+            </table>
+          </div>
+          <form id="kbForm" class="kb-form" onsubmit="saveKb(event)">
+            <input type="hidden" id="kbId">
+            <div class="field"><label for="kbTitle">Title</label><input id="kbTitle" required maxlength="160"></div>
+            <div class="kb-row">
+              <div class="field"><label for="kbLang">Language</label><select id="kbLang"><option value="en">English</option><option value="sw">Kiswahili</option></select></div>
+              <div class="field"><label for="kbCategory">Category</label><input id="kbCategory" maxlength="200" placeholder="selling, safety, post-harvest"></div>
+            </div>
+            <div class="field"><label for="kbTags">Search tags</label><input id="kbTags" maxlength="200" placeholder="extra words people may search for"></div>
+            <div class="field"><label for="kbSource">Source</label><input id="kbSource" maxlength="200" placeholder="Who wrote or verified this"></div>
+            <div class="field"><label for="kbBody">Body</label><textarea id="kbBody" rows="10" required></textarea></div>
+            <label class="small"><input type="checkbox" id="kbPublished" checked> Published</label>
+            <div class="inline" style="margin-top:12px">
+              <button class="button primary" type="submit" id="kbSave">Create article</button>
+              <button class="button secondary" type="button" onclick="resetKb()">New / clear</button>
+            </div>
+            <p class="small" id="kbMsg"></p>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -487,6 +525,7 @@
       }
       showDashboard();
       loadOverview();
+      loadKb();
     }
 
     async function logoutAdmin() {
@@ -520,15 +559,20 @@
       `).join('');
     }
 
+    // Escape user-supplied text before putting it in HTML (prevents stored XSS in the admin panel).
+    function esc(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
     function renderUsers(rows) {
       document.getElementById('userTable').innerHTML = (rows || []).map((row) => `
         <tr>
-          <td>${row.full_name || 'Unknown'}</td>
-          <td>${row.email}</td>
-          <td><span class="danger small">${row.password_hash || 'n/a'}</span></td>
-          <td><span class="badge">${row.role}</span></td>
+          <td>${esc(row.full_name || 'Unknown')}</td>
+          <td>${esc(row.email)}</td>
+          <td>${esc(row.phone || 'n/a')}</td>
+          <td><select class="role-select" onchange="changeRole(${Number(row.id)}, this.value)" aria-label="Role">${['buyer','seller','transporter'].map((r) => `<option value="${r}"${r === row.role ? ' selected' : ''}>${r}</option>`).join('')}</select></td>
           <td>${new Date(row.created_at).toLocaleDateString()}</td>
-          <td><button class="button danger" onclick="deleteUser(${row.id})">Delete</button></td>
+          <td><button class="button danger" onclick="deleteUser(${Number(row.id)})">Delete</button></td>
         </tr>
       `).join('');
     }
@@ -536,14 +580,14 @@
     function renderListings(rows) {
       document.getElementById('listingTable').innerHTML = (rows || []).map((row) => `
         <tr>
-          <td>${row.title || row.commodity}</td>
-          <td>${row.seller_name}</td>
+          <td>${esc(row.title || row.commodity)}</td>
+          <td>${esc(row.seller_name)}</td>
           <td>KSh ${Number(row.price_per_kg || 0).toLocaleString()}</td>
-          <td><span class="status-chip ${row.status || 'available'}">${(row.status || 'available').replace('_', ' ')}</span></td>
+          <td><span class="status-chip ${esc(row.status || 'available')}">${esc((row.status || 'available').replace('_', ' '))}</span></td>
           <td>
             <div class="inline">
-              <button class="button secondary" onclick="cycleListingStatus(${row.id}, '${row.status || 'available'}')">Update</button>
-              <button class="button danger" onclick="deleteListing(${row.id})">Delete</button>
+              <button class="button secondary" onclick="cycleListingStatus(${Number(row.id)}, '${esc(row.status || 'available')}')">Update</button>
+              <button class="button danger" onclick="deleteListing(${Number(row.id)})">Delete</button>
             </div>
           </td>
         </tr>
@@ -553,10 +597,10 @@
     function renderRoutes(rows) {
       document.getElementById('routeTable').innerHTML = (rows || []).map((row) => `
         <tr>
-          <td>${row.route_name}</td>
-          <td>${row.origin} → ${row.destination}</td>
+          <td>${esc(row.route_name)}</td>
+          <td>${esc(row.origin)} → ${esc(row.destination)}</td>
           <td>KSh ${Number(row.rate || 0).toLocaleString()}</td>
-          <td><button class="button danger" onclick="deleteRoute(${row.id})">Delete</button></td>
+          <td><button class="button danger" onclick="deleteRoute(${Number(row.id)})">Delete</button></td>
         </tr>
       `).join('');
     }
@@ -644,10 +688,10 @@
         const generated = new Date(data.generatedAt).toLocaleString();
         document.getElementById('summaryBox').innerHTML = `
           <p><strong>Last refresh:</strong> ${generated}</p>
-          <p>Filters: ${data.filters?.search || 'none'} / ${data.filters?.role || 'all roles'} / ${data.filters?.status || 'all statuses'}</p>
+          <p>Filters: ${esc(data.filters?.search || 'none')} / ${esc(data.filters?.role || 'all roles')} / ${esc(data.filters?.status || 'all statuses')}</p>
         `;
       } catch (error) {
-        document.getElementById('summaryBox').innerHTML = `<p class="danger" style="font-weight:700;">${error.message}</p>`;
+        document.getElementById('summaryBox').innerHTML = `<p class="danger" style="font-weight:700;">${esc(error.message)}</p>`;
       }
     }
 
@@ -658,12 +702,84 @@
         if (data.isAdmin) {
           showDashboard();
           loadOverview();
+          loadKb();
         } else {
           showLogin();
         }
       } catch (error) {
         showLogin();
       }
+    }
+
+    async function changeRole(id, role) {
+      const res = await fetch(`/api/admin/users/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ role }) });
+      const data = await res.json();
+      if (!res.ok) alert(data.error || 'Update failed');
+      loadOverview();
+    }
+
+    // ---- Knowledge base CRUD ----
+    state.kb = [];
+    async function loadKb() {
+      const res = await fetch('/api/admin/kb', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      state.kb = await res.json();
+      document.getElementById('kbTable').innerHTML = state.kb.map((a) => `
+        <tr>
+          <td>${esc(a.title)}</td>
+          <td>${esc(a.lang)}</td>
+          <td>${esc(a.category || '')}</td>
+          <td>${a.published ? 'Yes' : 'No'}</td>
+          <td><div class="inline">
+            <button class="button secondary" onclick="editKb(${Number(a.id)})">Edit</button>
+            <button class="button danger" onclick="deleteKb(${Number(a.id)})">Delete</button>
+          </div></td>
+        </tr>`).join('') || '<tr><td colspan="5" class="muted">No articles yet.</td></tr>';
+    }
+    function resetKb() {
+      document.getElementById('kbForm').reset();
+      document.getElementById('kbId').value = '';
+      document.getElementById('kbSave').textContent = 'Create article';
+      document.getElementById('kbMsg').textContent = '';
+    }
+    function editKb(id) {
+      const a = state.kb.find((x) => x.id === id);
+      if (!a) return;
+      document.getElementById('kbId').value = a.id;
+      document.getElementById('kbTitle').value = a.title;
+      document.getElementById('kbLang').value = a.lang;
+      document.getElementById('kbCategory').value = a.category || '';
+      document.getElementById('kbTags').value = a.tags || '';
+      document.getElementById('kbSource').value = a.source || '';
+      document.getElementById('kbBody').value = a.body;
+      document.getElementById('kbPublished').checked = !!a.published;
+      document.getElementById('kbSave').textContent = 'Update article';
+      document.getElementById('kbForm').scrollIntoView({ behavior: 'smooth' });
+    }
+    async function saveKb(e) {
+      e.preventDefault();
+      const id = document.getElementById('kbId').value;
+      const body = {
+        title: document.getElementById('kbTitle').value,
+        lang: document.getElementById('kbLang').value,
+        category: document.getElementById('kbCategory').value,
+        tags: document.getElementById('kbTags').value,
+        source: document.getElementById('kbSource').value,
+        body: document.getElementById('kbBody').value,
+        published: document.getElementById('kbPublished').checked
+      };
+      const res = await fetch(id ? `/api/admin/kb/${id}` : '/api/admin/kb', { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) });
+      const data = await res.json();
+      document.getElementById('kbMsg').textContent = res.ok ? (data.message || 'Saved') : (data.error || 'Save failed');
+      if (res.ok) { if (!id) resetKb(); loadKb(); }
+    }
+    async function deleteKb(id) {
+      if (!confirm('Delete this article? Ask Mkulima AI will stop using it.')) return;
+      const res = await fetch(`/api/admin/kb/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+      const data = await res.json();
+      if (!res.ok) alert(data.error || 'Delete failed');
+      resetKb();
+      loadKb();
     }
 
     checkSession();

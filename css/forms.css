@@ -19,3 +19,13 @@ textarea{resize:vertical;min-height:120px}
 .btn.primary{background:linear-gradient(135deg,var(--forest),var(--green));color:#fff;box-shadow:0 16px 30px rgba(22,75,53,.2)} 
 #formStatus{display:none;margin:0;padding:12px 14px;border-radius:12px;background:rgba(56,167,101,.12);border:1px solid rgba(56,167,101,.25);color:var(--forest);font-weight:700} 
 @media(max-width:700px){.two-col{grid-template-columns:1fr}.form-card{padding:22px 20px}.form-card h1{font-size:clamp(28px,9vw,42px)}}
+#formStatus:empty{display:none}
+#formStatus.err{background:rgba(180,35,24,.08);border-color:rgba(180,35,24,.3);color:#b42318}
+#formStatus.ok,#formStatus.err{display:block}
+.label-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hint{font-size:13px;font-weight:600;color:var(--muted)}
+.form-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn.ghost{background:transparent;border:1.5px solid rgba(22,75,53,.2);color:var(--forest);text-decoration:none}
+.btn.danger{background:#fff;border:1.5px solid rgba(180,35,24,.35);color:#b42318;margin-left:auto}
+.btn.ai{padding:8px 14px;font-size:14px;border-radius:999px;background:linear-gradient(135deg,#1F6FB8,#4A9FE8);color:#fff}
+.btn.ai[disabled],.btn[disabled]{opacity:.6;cursor:wait;transform:none}

@@ -4,12 +4,25 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "seed": "node server.js --seed",
+    "seed:reset": "node server.js --seed-reset",
+    "test": "playwright test",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.8.2",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.1",
     "express-session": "^1.18.1",
+    "helmet": "^8.3.0",
     "sqlite3": "^5.1.7"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
   }
 }

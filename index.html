@@ -1,18 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-v="{{ASSET_V}}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mkulima Market</title>
+<meta name="description" content="Kenyan agricultural marketplace: find produce, buyers, markets and transport. English and Kiswahili.">
+<meta name="theme-color" content="#164B35">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/assets/icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mkulima">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="/css/shell.css?v={{ASSET_V}}">
+<link rel="preload" href="/js/main.js?v={{ASSET_V}}" as="script">
+<link rel="preload" as="image" href="/assets/images/landing/hero.webp" media="(min-width: 761px)" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/images/landing/hero-sm.webp" media="(max-width: 760px)" fetchpriority="high">
 </head>
 <body>
 <nav id="sn" aria-label="Main"><div class="sb"><a class="lo" href="#/home"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#38A765"/><path d="M20 31V19" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#fff"/><path d="M20 24c0-4-2.5-6.500-8-6.500 0 4.500 2.500 6.500 8 6.500Z" fill="#F47721"/></svg>Mkulima Market</a>
-<div class="sl" id="sl"><a href="#/home" data-k="home" data-s="">Home</a><a href="#/home" data-k="project">Project</a><a href="#/home/produce" data-k="produce">Produce</a><a href="#/map" data-k="map">Map &amp; transport</a><a href="#/ai" data-k="ai">Ask Mkulima AI</a><a href="#/market" data-k="market">Market insights</a><a href="#/home/pricing" data-k="pricing">Pricing</a><a href="#/auth" data-k="auth">Log in / Sign up</a></div></div></nav>
+<button type="button" id="hb" aria-label="Menu" aria-controls="sl" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<div class="sl" id="sl"><a href="#/home" data-k="home" data-s="">Home</a><a href="#/home/produce" data-k="produce">Produce</a><a href="#/map" data-k="map">Map &amp; transport</a><a href="#/ai" data-k="ai">Ask Mkulima AI</a><a href="#/market" data-k="market">Market insights</a><a href="#/home/pricing" data-k="pricing">Pricing</a><a href="#/auth" data-k="auth">Log in / Sign up</a><button type="button" id="sl2" class="lng" aria-label="Badilisha lugha kuwa Kiswahili / Switch language">SW</button><button type="button" id="inst" class="inst" hidden>Install app</button></div></div></nav>
 <div class="view" id="v-home"></div><div class="view" id="v-map"></div><div class="view" id="v-ai"></div><div class="view" id="v-auth"></div><div class="view" id="v-dashboard"></div><div class="view" id="v-seller-form"></div><div class="view" id="v-transporter-form"></div>
-<script src="js/data/data.js"></script>
-<script src="js/main.js"></script>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="/js/data/data.js?v={{ASSET_V}}"></script>
+<script src="/js/main.js?v={{ASSET_V}}"></script>
 </body>
 </html>

@@ -50,3 +50,4 @@ footer{padding:36px 0;color:var(--mute);font-size:15px}
 @media(max-width:900px){.cg{grid-template-columns:1fr}.b{max-width:94%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .bar{display:none} section{scroll-margin-top:72px}
+.src{display:block;margin-top:8px;font-size:12px;opacity:.75}

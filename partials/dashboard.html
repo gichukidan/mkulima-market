@@ -1,86 +1,81 @@
 <section class="dashboard-shell" id="top">
   <div class="w dashboard-wrap">
     <aside class="profile-card">
-      <div class="avatar" id="profileAvatar">S</div>
+      <div class="avatar" id="profileAvatar">M</div>
       <div>
         <p class="eyebrow">Profile</p>
-        <h1 id="profileName">Seller profile</h1>
+        <h1 id="profileName">Loading…</h1>
       </div>
       <div class="badge-row">
-        <span class="pill" id="profileRole">Seller</span>
-        <span class="pill outline" id="profileLocation">Nairobi</span>
+        <span class="pill" id="profileRole">—</span>
+        <span class="pill outline" id="profileLocation">—</span>
       </div>
       <div class="contact-list">
-        <p><strong>Email:</strong> <span id="profileEmail">hello@example.com</span></p>
-        <p><strong>Phone:</strong> <span id="profilePhone">+254 700 000 000</span></p>
+        <p><strong>Email:</strong> <span id="profileEmail">—</span></p>
+        <p><strong>Phone:</strong> <span id="profilePhone">—</span></p>
       </div>
-      <button class="btn outline logout" id="logoutBtn" type="button">Logout</button>
+      <button class="btn outline" id="editProfileBtn" type="button" aria-expanded="false" aria-controls="profilePanel">Edit profile</button>
+      <button class="btn outline logout" id="logoutBtn" type="button">Log out</button>
     </aside>
 
     <main class="content-panel">
+      <p id="dashStatus" class="dash-status" role="status" aria-live="polite"></p>
+
       <div class="stats-grid">
-        <div class="stat-box">
-          <span class="label">Active listings</span>
-          <strong id="statListings">12</strong>
-        </div>
-        <div class="stat-box">
-          <span class="label">Orders</span>
-          <strong id="statOrders">48</strong>
-        </div>
-        <div class="stat-box">
-          <span class="label">Response rate</span>
-          <strong id="statResponse">94%</strong>
-        </div>
-        <div class="stat-box">
-          <span class="label">Rating</span>
-          <strong id="statRating">4.9</strong>
-        </div>
+        <div class="stat-box"><span class="label">Active listings</span><strong id="statListings">0</strong></div>
+        <div class="stat-box"><span class="label">All listings</span><strong id="statAll">0</strong></div>
+        <div class="stat-box"><span class="label">Transport routes</span><strong id="statRoutes">0</strong></div>
+        <div class="stat-box"><span class="label">Rating</span><strong id="statRating" title="Ratings start after your first completed trade">—</strong></div>
+      </div>
+
+      <!-- Profile edit, password and account deletion -->
+      <div class="panel-card" id="profilePanel" hidden>
+        <div class="section-head"><h2>Edit profile</h2></div>
+        <form id="profileForm" class="grid-form">
+          <label>Full name<input name="fullName" required maxlength="120"></label>
+          <label>Phone<input name="phone" type="tel" maxlength="30"></label>
+          <label>Location (town or market)<input name="location" maxlength="80"></label>
+          <label>Business type<input name="businessType" maxlength="80" placeholder="e.g. Smallholder farmer"></label>
+          <label class="full">Speciality<input name="speciality" maxlength="200" placeholder="e.g. Potatoes, cabbages"></label>
+          <div class="full row-actions"><button class="btn primary" type="submit">Save profile</button></div>
+        </form>
+        <hr>
+        <form id="passwordForm" class="grid-form">
+          <label>Current password<input name="currentPassword" type="password" autocomplete="current-password" required></label>
+          <label>New password<input name="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+          <div class="full row-actions"><button class="btn outline" type="submit">Change password</button></div>
+        </form>
+        <hr>
+        <form id="deleteForm" class="grid-form">
+          <p class="full muted">Delete your account and everything you posted. This cannot be undone.</p>
+          <label>Confirm with your password<input name="password" type="password" autocomplete="current-password" required></label>
+          <div class="row-actions"><button class="btn danger" type="submit">Delete my account</button></div>
+        </form>
       </div>
 
       <div class="panel-card">
         <div class="section-head">
-          <h2>Marketplace overview</h2>
-          <button class="btn small outline" type="button">Edit profile</button>
-        </div>
-        <div class="overview-grid">
-          <div>
-            <p class="muted">Business type</p>
-            <h3 id="businessType">Fresh produce seller</h3>
-          </div>
-          <div>
-            <p class="muted">Speciality</p>
-            <h3 id="speciality">Tomatoes, onions, greens</h3>
-          </div>
-          <div>
-            <p class="muted">Delivery</p>
-            <h3 id="delivery">Same-day and scheduled</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel-card">
-        <div class="section-head">
-          <h2 id="listHeading">Recent listings</h2>
-          <a class="btn small primary" href="#/seller-form" type="button">Add listing</a>
+          <h2>My listings</h2>
+          <a class="btn small primary" href="#/seller-form">Add listing</a>
         </div>
         <div class="listing-grid" id="listingGrid"></div>
       </div>
 
-      <div class="panel-card actions-panel">
+      <div class="panel-card">
         <div class="section-head">
-          <h2>Quick actions</h2>
+          <h2>My transport routes</h2>
+          <a class="btn small primary" href="#/transporter-form">Add route</a>
         </div>
+        <div class="listing-grid" id="routeGrid"></div>
+      </div>
+
+      <div class="panel-card actions-panel">
+        <div class="section-head"><h2>Quick actions</h2></div>
         <div class="action-grid">
-          <a class="action-card" href="#/seller-form">
-            <span class="action-icon">🌾</span>
-            <strong>Sell produce</strong>
-            <small>Create a fresh listing</small>
-          </a>
-          <a class="action-card" href="#/transporter-form">
-            <span class="action-icon">🚚</span>
-            <strong>Offer transport</strong>
-            <small>Create a route</small>
-          </a>
+          <a class="action-card" href="#/seller-form"><span class="action-icon">🌾</span><strong>Sell produce</strong><small>Create a listing (Auto-write helps)</small></a>
+          <a class="action-card" href="#/transporter-form"><span class="action-icon">🚚</span><strong>Offer transport</strong><small>Create a route</small></a>
+          <a class="action-card" href="#/ai"><span class="action-icon">💬</span><strong>Ask Mkulima AI</strong><small>Find produce, sellers and advice</small></a>
+          <a class="action-card" href="#/map"><span class="action-icon">📍</span><strong>Map</strong><small>Sellers and transport near you</small></a>
         </div>
       </div>
     </main>

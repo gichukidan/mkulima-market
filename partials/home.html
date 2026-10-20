@@ -1,109 +1,194 @@
-<nav id="nav"><div class="w"><div class="nb">
-<a class="logo" href="#top" aria-label="Mkulima Market"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#38A765"/><path d="M20 31V19" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#fff"/><path d="M20 24c0-4-2.5-6.500-8-6.500 0 4.500 2.500 6.500 8 6.500Z" fill="#F47721"/></svg>Mkulima Market</a>
-<div class="links"><a href="#buyers" data-t="nBuy">Find Buyers</a><a href="#produce" data-t="nProd">Produce</a><a href="#sellers" data-t="nSell">Sellers</a><a href="#pricing" data-t="nPrice">Pricing</a><a href="#ai" data-t="nAi">Ask Mkulima AI</a></div>
-<div class="tools">
-<button class="sq" id="lang" aria-label="Language"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><span id="lt">SW</span></button>
-<button class="sq" id="th" aria-label="Toggle dark mode"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
-<a class="btn or hide-m" href="#/auth" style="padding:11px 20px;font-size:15px" data-t="start">Get Started</a>
-<button class="sq sm" id="mb" aria-label="Menu" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-</div></div></div>
-<div class="mm" id="mm"><a href="#buyers" data-t="nBuy">Find Buyers</a><a href="#produce" data-t="nProd">Produce</a><a href="#sellers" data-t="nSell">Sellers</a><a href="#pricing" data-t="nPrice">Pricing</a><a href="#ai" data-t="nAi">Ask Mkulima AI</a><a href="#/auth" data-t="login">Login</a></div>
-</nav>
+<!-- Landing page. English text lives here; Kiswahili is in js/pages/home.js (data-t keys). -->
+<button id="lang" type="button" hidden>SW</button>
 
-<header class="hero" id="top"><div class="w">
-<h1 data-t="h1">From Farm to Market. Better Connections. Better Business.</h1>
-<p class="lead" data-t="lead">Discover fresh produce, connect with trusted buyers and sellers, find transport and make smarter trading decisions—all in one place.</p>
-<div class="cta"><a class="btn or" href="#/auth" data-t="explore">Explore the Market</a><a class="btn gh" href="#/auth" data-t="sell">Start Selling</a></div>
-<form class="search" id="sf" role="search">
-<label><svg class="ic" viewBox="0 0 24 24" style="font-size:22px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/></svg><input id="q" type="search" data-p="phProd" placeholder="Search tomatoes, onions, carrots" aria-label="Produce"></label>
-<label><svg class="ic" viewBox="0 0 24 24" style="font-size:22px"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><input id="loc" type="search" data-p="phLoc" placeholder="Town or market" aria-label="Location"></label>
-<button class="btn gr" type="submit" data-t="search">Search</button></form>
-</div>
+<!-- HERO: full-bleed market photo with search -->
+<header class="hero" id="top">
+  <picture class="hero-bg" aria-hidden="true">
+    <source media="(max-width: 760px)" srcset="/assets/images/landing/hero-sm.webp">
+    <img src="/assets/images/landing/hero.webp" alt="" fetchpriority="high" width="1920" height="1080">
+  </picture>
+  <div class="w hero-in">
+    <div class="hero-copy">
+      <span class="pill"><span class="dot"></span><span data-t="heroPill">Kenya's farm-to-market network</span></span>
+      <h1><span data-t="h1a">Sell your harvest.</span> <span class="hl" data-t="h1b">Source fresh produce.</span> <span data-t="h1c">Move it to market.</span></h1>
+      <p class="lead" data-t="lead">Mkulima Market connects farmers, buyers and transporters across Kenya, in English and Kiswahili. Real listings, honest prices and no fake reviews.</p>
+      <form class="search" id="sf" role="search">
+        <label class="sf-field"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="sr" data-t="srProd">Produce</span><input id="q" type="search" data-p="phProd" placeholder="Potatoes, tomatoes, onions…" autocomplete="off"></label>
+        <label class="sf-field"><svg class="ic" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="sr" data-t="srLoc">Town or market</span><input id="loc" type="search" data-p="phLoc" placeholder="Town or market" autocomplete="off"></label>
+        <button class="btn or" type="submit" data-t="search">Search</button>
+      </form>
+      <p class="popular"><span data-t="popular">Popular:</span> <button type="button" data-q="potatoes">Potatoes</button><button type="button" data-q="tomatoes">Tomatoes</button><button type="button" data-q="onions">Onions</button><button type="button" data-q="mangoes">Mangoes</button></p>
+    </div>
+    <aside class="hero-stats" aria-label="Platform today">
+      <p class="hs-title" data-t="hsTitle">On Mkulima Market today</p>
+      <div class="hs-grid">
+        <div><strong id="stListings">–</strong><span data-t="stListings">active listings</span></div>
+        <div><strong id="stSellers">–</strong><span data-t="stSellers">sellers</span></div>
+        <div><strong id="stCommodities">–</strong><span data-t="stCommodities">kinds of produce</span></div>
+        <div><strong id="stRoutes">–</strong><span data-t="stRoutes">transport routes</span></div>
+      </div>
+      <p class="hs-note" data-t="hsNote">Live counts from the marketplace.</p>
+    </aside>
+  </div>
 </header>
 
-<section id="buyers"><div class="w f rev rv">
-<div class="pic" style="--pos:20% 90%;--sz:300%"><i></i></div>
-<div><div class="chip" style="background:var(--orange)"><svg class="ic" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.800 6.100C15.500 5 17 4.500 19 2c1 2 2 4.200 2 8 0 5.500-4.800 10-10 10Z"/><path d="M2 21c0-3 1.900-5.500 5.500-6.500"/></svg></div>
-<h2 data-t="f1h">Your Produce Deserves a Market.</h2>
-<p data-t="f1p">Browse requests posted by retailers, traders and businesses, send your offer, and compare responses in one place. Spend less time searching and more time selling.</p>
-<a class="btn or" href="#/auth" data-t="f1b">Find Buyers</a></div></div></section>
+<!-- FOUR ACTIONS, overlapping the hero -->
+<section class="actions" aria-label="What would you like to do?">
+  <div class="w act-grid">
+    <a class="act a-or" href="#/seller-form"><span class="act-ic"><svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 15 4 21 4c0 5-3 8-9 8ZM12 15c0-4-2.5-6.5-8-6.5 0 4.5 2.5 6.5 8 6.5Z"/></svg></span>
+      <span><b data-t="a1h">Find a buyer</b><small data-t="a1p">List your produce in minutes. Auto-write helps with the wording.</small></span><i aria-hidden="true">→</i></a>
+    <a class="act a-gr" href="#produce"><span class="act-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <span><b data-t="a2h">Find a seller</b><small data-t="a2p">Browse fresh produce by price, quantity and place.</small></span><i aria-hidden="true">→</i></a>
+    <a class="act a-bl" href="#/map"><span class="act-ic"><svg viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.7a1 1 0 0 0-.2-.6l-3.3-4.1a1 1 0 0 0-.8-.4H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+      <span><b data-t="a3h">Find transport</b><small data-t="a3p">See transporters and routes near your farm.</small></span><i aria-hidden="true">→</i></a>
+    <a class="act a-ai" href="#/ai"><span class="act-ic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M8 9h8M8 13h5"/></svg></span>
+      <span><b data-t="a4h">Ask Mkulima AI</b><small data-t="a4p">Ask in English or Kiswahili. Answers come from real listings.</small></span><i aria-hidden="true">→</i></a>
+  </div>
+</section>
 
-<section class="alt" id="sellers-f"><div class="w f rv">
-<div class="pic" style="--pos:60% 55%;--sz:260%"><i></i></div>
-<div><div class="chip" style="background:var(--green)"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/></svg></div>
-<h2 data-t="f2h">Find Fresh Produce. Compare. Connect.</h2>
-<p data-t="f2p">Search by commodity, price, quantity, quality and location, then check each seller's reputation before you call.</p>
-<a class="btn or" href="#/auth" data-t="f2b">Explore Produce</a></div></div></section>
+<!-- FRESH FROM THE MARKET: real listings from the database -->
+<section class="sec" id="produce">
+  <div class="w">
+    <div class="sec-head rv">
+      <div><p class="kicker" data-t="prK">Marketplace</p><h2 data-t="prH">Fresh from the market</h2>
+        <p class="sub" data-t="prP">Asking prices set by sellers. Every listing links to a real seller on Mkulima Market.</p></div>
+      <a class="btn ghost" href="#/ai" data-t="prAll">Ask AI to find more</a>
+    </div>
+    <div class="chips rv" id="cats" role="group" aria-label="Categories"></div>
+    <div class="grid-cards" id="rail" aria-live="polite"></div>
+    <p class="empty" id="empty" hidden><span data-t="empty">No listings match your search yet.</span> <a href="#/ai" data-t="emptyAi">Ask Mkulima AI</a></p>
+  </div>
+</section>
 
-<section><div class="w f rev rv">
-<div class="pic" style="--pos:50% 70%;--sz:230%"><i></i></div>
-<div><div class="chip" style="background:var(--blue)"><svg class="ic" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.700a1 1 0 0 0-.2-.6l-3.300-4.100a1 1 0 0 0-.8-.4H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
-<h2 data-t="f3h">From the Farm to the Buyer.</h2>
-<p data-t="f3p">Find transporters, request quotations and compare delivery options. Transport matching arrives in Phase 2, together with maps and distance estimates.</p>
-<a class="btn bl" href="#/auth" data-go="#/auth" data-t="f3b">Find Transport</a></div></div></section>
+<!-- FOR SELLERS: photo + copy -->
+<section class="sec alt">
+  <div class="w split rv">
+    <figure class="ph ph-stack">
+      <img src="/assets/images/landing/market-day.webp" srcset="/assets/images/landing/market-day-sm.webp 640w, /assets/images/landing/market-day.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" alt="Buyers and sellers trading at an open-air market in Murang'a" loading="lazy" width="1200" height="900">
+      <img class="ph-small" src="/assets/images/landing/potatoes-sm.webp" alt="A farmer holding freshly harvested potatoes" loading="lazy" width="640" height="480">
+    </figure>
+    <div>
+      <p class="kicker or" data-t="sK">For farmers and sellers</p>
+      <h2 data-t="sH">Your harvest deserves a fair market.</h2>
+      <p class="sub" data-t="sP">Reach buyers beyond your village. Post what you have, set your price and let buyers come to you.</p>
+      <ul class="ticks">
+        <li data-t="s1">List in minutes, in English or Kiswahili</li>
+        <li data-t="s2">Auto-write drafts your listing from your own details</li>
+        <li data-t="s3">Update stock and prices any time from your dashboard</li>
+        <li data-t="s4">Your exact farm location stays private</li>
+      </ul>
+      <div class="cta-row"><a class="btn or" href="#/seller-form" data-t="sB">List your produce</a><a class="btn ghost" href="#/auth" data-t="sB2">Create a free account</a></div>
+    </div>
+  </div>
+</section>
 
-<section class="dark" id="ai"><div class="w f rv">
-<div class="chat" style="background:#0b2a1e;border:1px solid rgba(255,255,255,.15)"><div class="m u" data-t="q1">Find potatoes near me</div><div class="m a"><span data-t="a1">Here is how I will answer once connected to live listings: I search real listings, rank them by price and seller rating, and tell you when data is missing.</span><small data-t="a2">Preview of Phase 3. Not yet live.</small></div><div class="m u" data-t="q2">Nionyeshe masoko ya karibu</div></div>
-<div><div class="chip" style="background:var(--orange)"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
-<h2 style="margin:18px 0 20px" data-t="f4h">Smarter Decisions Start Here.</h2>
-<p class="mu" style="margin-bottom:30px;max-width:30em" data-t="f4p">Ask in English or Kiswahili to find produce, compare offers and discover nearby markets. Answers will come only from real platform data, and the assistant will say when something is missing.</p>
-<a class="btn or" href="#/ai" data-go="#/ai" data-t="f4b">Ask Mkulima AI</a></div></div></section>
+<!-- ASK MKULIMA AI -->
+<section class="sec">
+  <div class="w split rev rv">
+    <figure class="ph">
+      <img src="/assets/images/landing/farmer-phone.webp" srcset="/assets/images/landing/farmer-phone-sm.webp 640w, /assets/images/landing/farmer-phone.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" alt="A smiling Kenyan farmer talking on her phone in a green field" loading="lazy" width="1200" height="900">
+      <div class="chat-float" aria-hidden="true">
+        <div class="bub u" data-t="c1">Nitafute viazi karibu na Karatina, angalau magunia 40</div>
+        <div class="bub a" data-t="c2">Nimepata tangazo 1: Shangi, Daraja A, kilo 4,500, KSh 38/kg, km 87 (mstari ulionyooka).</div>
+      </div>
+    </figure>
+    <div>
+      <p class="kicker bl" data-t="aiK">Ask Mkulima AI</p>
+      <h2 data-t="aiH">Your market assistant, in your language.</h2>
+      <p class="sub" data-t="aiP">Ask a question the way you would ask a friend. Mkulima AI searches live listings, nearby sellers and our farming guides, then shows its sources.</p>
+      <ul class="ticks">
+        <li data-t="ai1">Finds produce near you and compares sellers</li>
+        <li data-t="ai2">Advice on storage, safety and selling, with sources</li>
+        <li data-t="ai3">Never invents prices, sellers or reviews</li>
+      </ul>
+      <div class="cta-row"><a class="btn bl" href="#/ai" data-t="aiB">Ask Mkulima AI</a></div>
+    </div>
+  </div>
+</section>
 
-<section id="produce"><div class="w">
-<div class="head rv"><h2><span data-t="prH">Fresh from the Market</span></h2><a class="btn gr" href="#/auth" data-t="viewAll">View All Produce</a></div>
-<div class="cats" id="cats" role="group"></div>
-<div class="rail" id="rail" tabindex="0" aria-label="Produce"></div>
-<p class="empty" id="empty" data-t="empty">No produce matches your search. Try another name or clear the filters.</p>
-</div></section>
+<!-- HOW IT WORKS -->
+<section class="sec alt" id="how">
+  <div class="w">
+    <div class="sec-head center rv"><div><p class="kicker" data-t="hwK">How it works</p><h2 data-t="hwH">From farm to buyer in three steps</h2></div></div>
+    <ol class="steps rv">
+      <li><span class="num">1</span><img src="/assets/images/landing/farmer-field-sm.webp" alt="A farmer tending crops on a hillside farm" loading="lazy" width="640" height="480"><h3 data-t="st1h">List or search</h3><p data-t="st1p">Sellers post produce with price and quantity. Buyers search by crop, place and price.</p></li>
+      <li><span class="num">2</span><img src="/assets/images/landing/stall-sm.webp" alt="A market stall with tomatoes, peppers, watermelons and fruit" loading="lazy" width="480" height="360"><h3 data-t="st2h">Compare and connect</h3><p data-t="st2p">Compare listings, see distance and seller details, then agree the deal directly.</p></li>
+      <li><span class="num">3</span><img src="/assets/images/landing/wakulima-sm.webp" alt="Traders inside Wakulima Market in Nairobi" loading="lazy" width="480" height="640"><h3 data-t="st3h">Move it to market</h3><p data-t="st3p">Find a transporter on your route, weigh and inspect, then pay safely.</p></li>
+    </ol>
+  </div>
+</section>
 
-<section class="alt" id="sellers"><div class="w">
-<h2 class="rv" data-t="seH">Trusted Sellers</h2>
-<p class="rv" style="color:var(--mute);margin-top:20px;max-width:36em" data-t="seP">Ratings come from buyers who completed a transaction. Sellers with the most positive reviews rank higher in search.</p>
-<div class="sg rv" id="sg"></div>
-<div class="note rv"><svg class="ic" viewBox="0 0 24 24"><path d="M3.800 12.100 12 2.500l8.200 9.600-4.200 8H8Z" style="display:none"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><div><b data-t="vbH">The blue badge is separate from ratings.</b><br><span style="color:var(--mute)" data-t="vbP">It is a paid verification service that includes a visit to the farm or business. Paying does not guarantee the badge, and a good rating does not mean a seller is verified.</span></div></div>
-</div></section>
+<!-- TRANSPORT BAND: background photo -->
+<section class="band band-transport">
+  <div class="w band-in rv">
+    <div>
+      <p class="kicker light" data-t="trK">Transport</p>
+      <h2 data-t="trH">Get your produce to market on time.</h2>
+      <p data-t="trP">Transporters list their routes, vehicles and capacity. See who drives your route and ask for a quote. Distances are shown as straight-line unless marked "by road".</p>
+    </div>
+    <div class="cta-row"><a class="btn wh" href="#/map" data-t="trB">Open the map</a><a class="btn ghost light" href="#/transporter-form" data-t="trB2">List a transport route</a></div>
+  </div>
+</section>
 
-<section id="pricing"><div class="w">
-<h2 class="rv" data-t="prcH">Simple pricing that grows with your business</h2>
-<p class="rv" style="color:var(--mute);margin-top:20px;max-width:38em" data-t="prcP">Proposed launch prices, to be tested with real users and adjusted later.</p>
-<div class="pg rv">
-<div class="pl"><h3>Free</h3><div class="pr">KSh 0</div><ul>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="l5">Up to 5 active listings</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="p3">3 photos per listing</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="bp">Basic profile</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="aiAcc">Access to Mkulima AI</span></li></ul></div>
-<div class="pl hi"><h3>Biashara</h3><div class="pr">KSh 500<small data-t="mo"> / month</small></div><ul>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="ev1">Everything in Free</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="l25">Up to 25 active listings</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="p5">5 photos per listing</span></li>
-<li class="pn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><span data-t="stats">Listing views and enquiry stats</span><em data-t="planned">Planned</em></span></li>
-<li class="pn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><span data-t="sms">SMS price alerts</span><em data-t="planned">Planned</em></span></li></ul></div>
-<div class="pl"><h3>Agribusiness</h3><div class="pr">KSh 3,000<small data-t="mo"> / month</small></div><ul>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="ev2">Everything in Biashara</span></li>
-<li><svg class="ic" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span data-t="unl">Unlimited listings</span></li>
-<li class="pn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><span data-t="team">Team accounts and bulk tenders</span><em data-t="planned">Planned</em></span></li>
-<li class="pn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><span data-t="prio">Priority support and market reports</span><em data-t="planned">Planned</em></span></li></ul></div>
-</div>
-<div class="badge rv"><svg class="ic big" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
-<div><h3 data-t="bbH">Blue Badge Verification</h3><p data-t="bbP">We visit your farm or business and run verification checks so buyers can trust you. Subject to scheduling, coverage and a successful visit. The badge is never issued just because someone pays. Verified and renewal status appear on your profile.</p></div>
-<div style="font-size:34px;font-weight:800;white-space:nowrap">KSh 1,000<small style="font-size:16px;font-weight:600" data-t="mo"> / month</small></div></div>
-</div></section>
+<!-- TRUST -->
+<section class="sec">
+  <div class="w">
+    <div class="sec-head center rv"><div><p class="kicker" data-t="tK">Why traders trust us</p><h2 data-t="tH">Built on real data, not hype</h2></div></div>
+    <div class="trust rv">
+      <article><span class="t-ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3 data-t="t1h">No fake reviews</h3><p data-t="t1p">Ratings come only from completed trades. The blue badge is given after a real farm or business visit, never just for paying.</p></article>
+      <article><span class="t-ic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><h3 data-t="t2h">Honest prices</h3><p data-t="t2p">Asking prices, reported market prices and confirmed trade prices are always labelled and never mixed.</p></article>
+      <article><span class="t-ic"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3 data-t="t3h">Your privacy</h3><p data-t="t3p">We show your approximate area, never your home. Phone numbers are not public. Delete your account any time.</p></article>
+      <article><span class="t-ic"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span><h3 data-t="t4h">Works on any phone</h3><p data-t="t4p">Install it like an app, use it on slow networks, and keep browsing pages you have visited when offline.</p></article>
+    </div>
+  </div>
+</section>
 
-<section class="dark" id="how"><div class="w"><h2 class="rv" data-t="hwH">How it works</h2>
-<div class="hw rv">
-<div><span class="n">1</span><div class="chip"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/></svg></div><h3 data-t="s1h">Discover or post a request</h3><p class="mu" data-t="s1p">Search produce near you, or tell sellers what you need.</p></div>
-<div><span class="n">2</span><div class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.900M16 3.100a4 4 0 0 1 0 7.800"/></svg></div><h3 data-t="s2h">Compare offers and connect</h3><p class="mu" data-t="s2p">Review prices, ratings and quantities, then contact your partner.</p></div>
-<div><span class="n">3</span><div class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M15 18H9M19 18h2v-5l-3-4h-4"/></svg></div><h3 data-t="s3h">Arrange collection or transport</h3><p class="mu" data-t="s3p">Agree the handover, then complete the transaction and leave a review.</p></div>
-</div></div></section>
+<!-- PRICING -->
+<section class="sec alt" id="pricing">
+  <div class="w">
+    <div class="sec-head center rv"><div><p class="kicker" data-t="pK">Pricing</p><h2 data-t="prcH">Start free. Grow when you are ready.</h2><p class="sub" data-t="prcP">Proposed launch prices, to be tested with real users.</p></div></div>
+    <div class="plans rv">
+      <article class="plan"><h3>Free</h3><p class="amt">KSh 0</p><ul class="ticks sm"><li data-t="l5">Up to 5 active listings</li><li data-t="aiAcc">Ask Mkulima AI and Auto-write</li><li data-t="bp">Basic profile</li></ul><a class="btn ghost" href="#/auth" data-t="pB1">Start free</a></article>
+      <article class="plan hi"><span class="tag" data-t="pop">Most popular</span><h3>Biashara</h3><p class="amt">KSh 500<small data-t="mo"> / month</small></p><ul class="ticks sm"><li data-t="ev1">Everything in Free</li><li data-t="l25">Up to 25 active listings</li><li data-t="stats">Listing views and enquiry stats (planned)</li></ul><a class="btn or" href="#/auth" data-t="pB2">Choose Biashara</a></article>
+      <article class="plan"><h3>Agribusiness</h3><p class="amt">KSh 3,000<small data-t="mo"> / month</small></p><ul class="ticks sm"><li data-t="ev2">Everything in Biashara</li><li data-t="unl">Unlimited listings</li><li data-t="team">Team accounts (planned)</li></ul><a class="btn ghost" href="#/auth" data-t="pB3">Talk to us</a></article>
+    </div>
+  </div>
+</section>
 
-<section class="close" id="join"><div class="w">
-<h2 data-t="clH">Let's Build Better Agricultural Markets Together.</h2>
-<div class="cta" style="margin-top:36px"><a class="btn or" href="#/auth" data-t="jb">Join as a buyer</a><a class="btn gh" href="#/auth" data-t="js">Join as a seller</a><a class="btn gh" href="#/auth" data-t="jt">Join as a transporter</a></div>
-<p style="margin-top:22px;font-size:15px;opacity:.85" data-t="reg">Registration opens with the marketplace launch. These buttons are not live yet.</p></div></section>
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="w narrow">
+    <div class="sec-head center rv"><div><p class="kicker" data-t="fqK">Questions</p><h2 data-t="fqH">Frequently asked questions</h2></div></div>
+    <div class="faq rv">
+      <details><summary data-t="q1">Is Mkulima Market free to use?</summary><p data-t="q1a">Yes. Buyers always use it free, and sellers can list up to 5 items free.</p></details>
+      <details><summary data-t="q2">How do I get paid?</summary><p data-t="q2a">You agree payment directly with the buyer, usually M-Pesa. Weigh and inspect produce first, and keep your M-Pesa messages as records.</p></details>
+      <details><summary data-t="q3">Can I use it in Kiswahili?</summary><p data-t="q3a">Yes. Switch language at the top of any page, and ask Mkulima AI in Kiswahili.</p></details>
+      <details><summary data-t="q4">Is my location shared?</summary><p data-t="q4a">Only an approximate area (about 1 km) is shown to others, never your exact farm or home.</p></details>
+      <details><summary data-t="q5">Does it work without internet?</summary><p data-t="q5a">Install the app from your browser. Pages you have opened keep working offline, and new data loads when you reconnect.</p></details>
+    </div>
+  </div>
+</section>
 
-<footer><div class="w"><div class="fg">
-<div><div class="logo" style="color:#fff;margin-bottom:14px">Mkulima Market</div><p style="max-width:22em" data-t="fAbout">A Kenyan agricultural marketplace for farmers, buyers, markets and transporters.</p></div>
-<div><h3 data-t="fE">Explore</h3><a href="#produce" data-t="nProd">Produce</a><a href="#sellers" data-t="nSell">Sellers</a><a href="#pricing" data-t="nPrice">Pricing</a></div>
-<div><h3 data-t="fC">Contact</h3><a href="#">hello@mkulimamarket.example</a><a href="#">Nairobi, Kenya</a></div>
-<div><h3 data-t="fL">Language</h3><a href="#" data-l="en">English</a><a href="#" data-l="sw">Kiswahili</a></div></div>
-<div class="cp"><span>© 2026 Mkulima Market</span><span><a style="display:inline" href="#" data-t="terms">Terms</a> &nbsp; <a style="display:inline" href="#" data-t="priv">Privacy</a></span></div></div></footer>
+<!-- FINAL CTA with background photo -->
+<section class="band band-join" id="join">
+  <div class="w band-in center rv">
+    <h2 data-t="clH">Let's build better agricultural markets together.</h2>
+    <p data-t="clP">Join free as a buyer, seller or transporter.</p>
+    <div class="cta-row center"><a class="btn or" href="#/auth" data-t="jb">Join as a buyer</a><a class="btn wh" href="#/auth" data-t="js">Join as a seller</a><a class="btn ghost light" href="#/auth" data-t="jt">Join as a transporter</a></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="w">
+    <div class="fg">
+      <div><div class="flogo">Mkulima Market</div><p data-t="fAbout">A Kenyan agricultural marketplace for farmers, buyers, markets and transporters.</p></div>
+      <div><h3 data-t="fE">Explore</h3><a href="#produce" data-t="fProd">Produce</a><a href="#/map" data-t="fMap">Map and transport</a><a href="#/ai" data-t="fAi">Ask Mkulima AI</a><a href="#pricing" data-t="fPrice">Pricing</a></div>
+      <div><h3 data-t="fA">Account</h3><a href="#/auth" data-t="fLogin">Log in or sign up</a><a href="#/dashboard" data-t="fDash">Dashboard</a><a href="#/seller-form" data-t="fSell">Sell produce</a></div>
+      <div><h3 data-t="fL">Language</h3><a href="#" data-l="en">English</a><a href="#" data-l="sw">Kiswahili</a></div>
+    </div>
+    <details class="credits"><summary data-t="credits">Photo credits</summary><ul id="creditList"></ul></details>
+    <div class="cp"><span>© 2026 Mkulima Market</span><span class="m" data-t="fMade">Made in Kenya</span></div>
+  </div>
+</footer>
