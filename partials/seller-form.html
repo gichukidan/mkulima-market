@@ -1,0 +1,64 @@
+<section class="form-shell" id="top">
+  <div class="w form-wrap">
+    <div class="form-card">
+      <p class="eyebrow">Create listing</p>
+      <h1>Post a fresh produce listing</h1>
+      <form id="sellerForm" class="stack-form">
+        <div class="two-col">
+          <label>
+            <span>Listing title</span>
+            <input type="text" name="title" placeholder="Tomato crates" required>
+          </label>
+          <label>
+            <span>Commodity</span>
+            <input type="text" name="commodity" placeholder="Tomatoes" required>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>
+            <span>Grade</span>
+            <input type="text" name="grade" placeholder="Grade A">
+          </label>
+          <label>
+            <span>Unit</span>
+            <select name="unit">
+              <option value="kg">kg</option>
+              <option value="crate">crate</option>
+              <option value="bag">bag</option>
+              <option value="box">box</option>
+            </select>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>
+            <span>Quantity</span>
+            <input type="number" name="quantityKg" min="1" step="0.1" placeholder="120" required>
+          </label>
+          <label>
+            <span>Price per kg</span>
+            <input type="number" name="pricePerKg" min="1" step="0.1" placeholder="75" required>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>
+            <span>Location</span>
+            <input type="text" name="location" placeholder="Nairobi, Kenya">
+          </label>
+          <label>
+            <span>Status</span>
+            <select name="status">
+              <option value="available">Available</option>
+              <option value="almost_out">Almost out</option>
+              <option value="paused">Paused</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          <span>Description</span>
+          <textarea name="description" rows="4" placeholder="Freshly harvested produce, suitable for wholesale buyers."></textarea>
+        </label>
+        <button class="btn primary" type="submit">Save listing</button>
+      </form>
+    </div>
+  </div>
+</section>

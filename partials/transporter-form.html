@@ -1,0 +1,49 @@
+<section class="form-shell" id="top">
+  <div class="w form-wrap">
+    <div class="form-card">
+      <p class="eyebrow alt">Create route</p>
+      <h1>Offer a transport route</h1>
+      <form id="transporterForm" class="stack-form">
+        <div class="two-col">
+          <label>
+            <span>Route name</span>
+            <input type="text" name="routeName" placeholder="Nakuru to Nairobi" required>
+          </label>
+          <label>
+            <span>Vehicle</span>
+            <input type="text" name="vehicle" placeholder="Truck / van / pickup" required>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>
+            <span>Origin</span>
+            <input type="text" name="origin" placeholder="Nakuru" required>
+          </label>
+          <label>
+            <span>Destination</span>
+            <input type="text" name="destination" placeholder="Nairobi" required>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>
+            <span>Capacity (kg)</span>
+            <input type="number" name="capacityKg" min="1" step="0.1" placeholder="2500">
+          </label>
+          <label>
+            <span>Rate (KSh)</span>
+            <input type="number" name="rate" min="1" step="1" placeholder="42000" required>
+          </label>
+        </div>
+        <label>
+          <span>Service days</span>
+          <input type="text" name="serviceDays" placeholder="Mon - Sat">
+        </label>
+        <label>
+          <span>Description</span>
+          <textarea name="description" rows="4" placeholder="Reliable farm-to-market transport for fresh produce and grains."></textarea>
+        </label>
+        <button class="btn primary" type="submit">Save route</button>
+      </form>
+    </div>
+  </div>
+</section>

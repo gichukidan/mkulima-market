@@ -1,0 +1,21 @@
+:host{--bg:#0b221d;--panel:#f5f5f0;--panel-strong:#fff;--forest:#164B35;--green:#38A765;--orange:#F47721;--blue:#4A9FE8;--ink:#15221d;--muted:#596863;--line:rgba(22,75,53,.12);--shadow:0 18px 48px rgba(12,28,22,.28);display:block;background:linear-gradient(180deg,#071d1a 0%,#0d281f 100%);color:var(--ink);font:500 17px/1.7 'Plus Jakarta Sans',system-ui,sans-serif} 
+*{box-sizing:border-box} 
+.form-shell{min-height:100svh;padding:120px 0 90px} 
+.w{max-width:1060px;margin:0 auto;padding:0 24px} 
+.form-wrap{display:grid;place-items:center} 
+.form-card{width:min(100%,900px);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:34px 34px 30px} 
+.eyebrow{margin:0 0 12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--forest)} 
+.eyebrow.alt{color:var(--orange)} 
+.form-card h1{margin:0 0 26px;font-size:clamp(32px,4vw,62px);letter-spacing:-.06em;line-height:1.02;color:var(--forest)} 
+.stack-form{display:flex;flex-direction:column;gap:18px} 
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px} 
+label{display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:700;color:var(--ink)} 
+input,select,textarea{border:1.5px solid rgba(22,75,53,.15);background:#f8faf7;padding:14px 15px;border-radius:14px;font:600 16px 'Plus Jakarta Sans',sans-serif;color:var(--ink);outline:0;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease} 
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(56,167,101,.12)} 
+input:hover,select:hover,textarea:hover{transform:translateY(-1px)} 
+textarea{resize:vertical;min-height:120px} 
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;padding:16px 24px;font:700 16px 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease} 
+.btn:hover{transform:translateY(-2px)} 
+.btn.primary{background:linear-gradient(135deg,var(--forest),var(--green));color:#fff;box-shadow:0 16px 30px rgba(22,75,53,.2)} 
+#formStatus{display:none;margin:0;padding:12px 14px;border-radius:12px;background:rgba(56,167,101,.12);border:1px solid rgba(56,167,101,.25);color:var(--forest);font-weight:700} 
+@media(max-width:700px){.two-col{grid-template-columns:1fr}.form-card{padding:22px 20px}.form-card h1{font-size:clamp(28px,9vw,42px)}}

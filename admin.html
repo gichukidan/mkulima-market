@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mkulima Market Admin</title>
+  <style>
+    :root {
+      --bg: #071a17;
+      --bg-soft: #0d2a24;
+      --panel: #102d29;
+      --panel-strong: #163631;
+      --card: #1d403a;
+      --ink: #edf9f3;
+      --muted: #b8d7ca;
+      --line: rgba(255,255,255,0.08);
+      --green: #71f0b6;
+      --forest: #1ed084;
+      --blue: #7ec5ff;
+      --amber: #ffc76a;
+      --red: #ff7a7a;
+      --shadow: rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-soft) 100%);
+      color: var(--ink);
+    }
+
+    .wrap {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .title {
+      font-size: clamp(1.8rem, 2vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      color: var(--green);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 120ms ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--forest), var(--green));
+      color: #071a17;
+    }
+
+    .button.secondary {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .button.danger {
+      background: rgba(255,122,122,0.12);
+      border: 1px solid rgba(255,122,122,0.35);
+      color: var(--red);
+    }
+
+    .login-panel {
+      display: none;
+      max-width: 520px;
+      margin: 70px auto 0;
+      background: rgba(16,45,41,0.94);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 24px 44px var(--shadow);
+    }
+
+    .login-panel h2 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      letter-spacing: -0.05em;
+    }
+
+    .login-panel p {
+      margin: 0 0 22px;
+      color: var(--muted);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select,
+    .toolbar input,
+    .toolbar select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel-strong), rgba(22,54,49,0.92));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+
+    .card .label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .card .value {
+      font-size: clamp(1.8rem, 2vw, 2.7rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--green);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 16px;
+      background: rgba(16,45,41,0.8);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .toolbar > div {
+      min-width: 180px;
+      flex: 1 1 180px;
+    }
+
+    .toolbar label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 22px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: rgba(16,45,41,0.9);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .panel h3 {
+      margin: 0;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+      font-size: 1.2rem;
+    }
+
+    .panel-body {
+      padding: 18px 20px 22px;
+    }
+
+    .mini-chart {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      padding-top: 10px;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(180deg, var(--green), var(--blue));
+      position: relative;
+      min-height: 20px;
+    }
+
+    .bar::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(113,240,182,0.14);
+      color: var(--green);
+    }
+
+    .status-chip {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: capitalize;
+      background: rgba(255,199,106,0.14);
+      color: var(--amber);
+    }
+
+    .status-chip.sold { background: rgba(255,122,122,0.14); color: var(--red); }
+    .status-chip.available { background: rgba(113,240,182,0.14); color: var(--green); }
+    .status-chip.paused { background: rgba(126,197,255,0.12); color: var(--blue); }
+    .status-chip.almost_out { background: rgba(255,199,106,0.14); color: var(--amber); }
+
+    .muted { color: var(--muted); }
+    .danger { color: var(--red); }
+    .small { font-size: 12px; }
+
+    .inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stats { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar > div { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginView" class="login-panel">
+    <h2>Admin login</h2>
+    <p>Restricted dashboard for internal platform operations.</p>
+    <div class="field">
+      <label for="adminEmail">Email</label>
+      <input id="adminEmail" type="email" placeholder="admin@mkulima.test">
+    </div>
+    <div class="field">
+      <label for="adminPassword">Password</label>
+      <input id="adminPassword" type="password" placeholder="Enter admin password">
+    </div>
+    <button class="button primary" onclick="loginAdmin()">Login</button>
+  </div>
+
+  <div id="dashboardView" class="wrap dashboard">
+    <div class="topbar">
+      <div class="title">Mkulima Market Admin</div>
+      <div class="actions">
+        <button class="button secondary" onclick="loadOverview()">Refresh</button>
+        <button class="button secondary" onclick="logoutAdmin()">Logout</button>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="toolbar">
+      <div>
+        <label>Search</label>
+        <input id="globalSearch" type="search" placeholder="Search users, listings, routes...">
+      </div>
+      <div>
+        <label>Role</label>
+        <select id="roleFilter">
+          <option value="">All roles</option>
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+          <option value="transporter">Transporter</option>
+        </select>
+      </div>
+      <div>
+        <label>Listing status</label>
+        <select id="statusFilter">
+          <option value="">All statuses</option>
+          <option value="available">Available</option>
+          <option value="almost_out">Almost out</option>
+          <option value="paused">Paused</option>
+          <option value="sold">Sold</option>
+        </select>
+      </div>
+      <div>
+        <label>Quick actions</label>
+        <button class="button primary" style="width:100%;" onclick="applyFilters()">Apply filters</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Users</h3>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="userTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Platform snapshot</h3>
+        <div class="panel-body">
+          <div class="mini-chart" id="chartBars"></div>
+          <div id="summaryBox" class="small muted" style="margin-top: 28px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 24px;">
+      <div class="panel">
+        <h3>Listings</h3>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Commodity</th>
+                <th>Seller</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="listingTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Routes</h3>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>From → To</th>
+                <th>Rate</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="routeTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      lastOverview: null
+    };
+
+    function showLogin() {
+      document.getElementById('loginView').style.display = 'block';
+      document.getElementById('dashboardView').style.display = 'none';
+    }
+
+    function showDashboard() {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('dashboardView').style.display = 'block';
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('globalSearch').value.trim();
+      const role = document.getElementById('roleFilter').value;
+      const status = document.getElementById('statusFilter').value;
+      loadOverview({ search, role, status });
+    }
+
+    async function loginAdmin() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Login failed');
+        return;
+      }
+      showDashboard();
+      loadOverview();
+    }
+
+    async function logoutAdmin() {
+      await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' });
+      showLogin();
+    }
+
+    function chartFromBreakdown(rows, key) {
+      const maxValue = Math.max(...(rows.map((row) => Number(row.total || 0))), 1);
+      document.getElementById('chartBars').innerHTML = rows.map((row) => {
+        const value = Number(row.total || 0);
+        const height = Math.max(20, (value / maxValue) * 180);
+        const label = row[key] || 'n/a';
+        return `<div class="bar" data-label="${label}" style="height:${height}px;"></div>`;
+      }).join('');
+    }
+
+    function renderStats(summary) {
+      const stats = [
+        ['Users', summary.users],
+        ['Sellers', summary.sellers],
+        ['Transporters', summary.transporters],
+        ['Listings', summary.listings],
+        ['Routes', summary.routes]
+      ];
+      document.getElementById('stats').innerHTML = stats.map(([label, value]) => `
+        <div class="card">
+          <span class="label">${label}</span>
+          <div class="value">${value}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderUsers(rows) {
+      document.getElementById('userTable').innerHTML = (rows || []).map((row) => `
+        <tr>
+          <td>${row.full_name || 'Unknown'}</td>
+          <td>${row.email}</td>
+          <td><span class="danger small">${row.password_hash || 'n/a'}</span></td>
+          <td><span class="badge">${row.role}</span></td>
+          <td>${new Date(row.created_at).toLocaleDateString()}</td>
+          <td><button class="button danger" onclick="deleteUser(${row.id})">Delete</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderListings(rows) {
+      document.getElementById('listingTable').innerHTML = (rows || []).map((row) => `
+        <tr>
+          <td>${row.title || row.commodity}</td>
+          <td>${row.seller_name}</td>
+          <td>KSh ${Number(row.price_per_kg || 0).toLocaleString()}</td>
+          <td><span class="status-chip ${row.status || 'available'}">${(row.status || 'available').replace('_', ' ')}</span></td>
+          <td>
+            <div class="inline">
+              <button class="button secondary" onclick="cycleListingStatus(${row.id}, '${row.status || 'available'}')">Update</button>
+              <button class="button danger" onclick="deleteListing(${row.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderRoutes(rows) {
+      document.getElementById('routeTable').innerHTML = (rows || []).map((row) => `
+        <tr>
+          <td>${row.route_name}</td>
+          <td>${row.origin} → ${row.destination}</td>
+          <td>KSh ${Number(row.rate || 0).toLocaleString()}</td>
+          <td><button class="button danger" onclick="deleteRoute(${row.id})">Delete</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Delete this user and all of their listings/routes?')) return;
+      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Delete failed');
+        return;
+      }
+      loadOverview();
+    }
+
+    async function deleteListing(id) {
+      if (!confirm('Delete this listing?')) return;
+      const res = await fetch(`/api/admin/listings/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Delete failed');
+        return;
+      }
+      loadOverview();
+    }
+
+    async function cycleListingStatus(id, currentStatus) {
+      const next = {
+        available: 'almost_out',
+        almost_out: 'paused',
+        paused: 'sold',
+        sold: 'available'
+      }[currentStatus || 'available'] || 'available';
+      const res = await fetch(`/api/admin/listings/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ status: next })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Status update failed');
+        return;
+      }
+      loadOverview();
+    }
+
+    async function deleteRoute(id) {
+      if (!confirm('Delete this route?')) return;
+      const res = await fetch(`/api/admin/routes/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Delete failed');
+        return;
+      }
+      loadOverview();
+    }
+
+    async function loadOverview(customFilters = null) {
+      const params = new URLSearchParams();
+      const search = customFilters?.search ?? document.getElementById('globalSearch').value.trim();
+      const role = customFilters?.role ?? document.getElementById('roleFilter').value;
+      const status = customFilters?.status ?? document.getElementById('statusFilter').value;
+      if (search) params.set('search', search);
+      if (role) params.set('role', role);
+      if (status) params.set('status', status);
+
+      try {
+        const res = await fetch(`/api/admin/overview?${params.toString()}`, { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to load dashboard');
+
+        state.lastOverview = data;
+        renderStats(data.summary || {});
+        renderUsers(data.recentUsers || []);
+        renderListings(data.recentListings || []);
+        renderRoutes(data.recentRoutes || []);
+
+        if (Array.isArray(data.roleBreakdown) && data.roleBreakdown.length) {
+          chartFromBreakdown(data.roleBreakdown, 'role');
+        } else {
+          document.getElementById('chartBars').innerHTML = '<div class="muted">No role data available.</div>';
+        }
+
+        const generated = new Date(data.generatedAt).toLocaleString();
+        document.getElementById('summaryBox').innerHTML = `
+          <p><strong>Last refresh:</strong> ${generated}</p>
+          <p>Filters: ${data.filters?.search || 'none'} / ${data.filters?.role || 'all roles'} / ${data.filters?.status || 'all statuses'}</p>
+        `;
+      } catch (error) {
+        document.getElementById('summaryBox').innerHTML = `<p class="danger" style="font-weight:700;">${error.message}</p>`;
+      }
+    }
+
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/admin/session', { credentials: 'same-origin' });
+        const data = await res.json();
+        if (data.isAdmin) {
+          showDashboard();
+          loadOverview();
+        } else {
+          showLogin();
+        }
+      } catch (error) {
+        showLogin();
+      }
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>
