@@ -11,7 +11,7 @@
     return fetch(url, { method: method, credentials: 'same-origin', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined })
       .then(async function (res) {
         var data = await res.json().catch(function () { return {}; });
-        if (res.status === 401) { location.hash = '#/auth'; throw new Error('Please log in.'); }
+        if (res.status === 401) { location.hash = '#/login'; throw new Error('Please log in.'); }
         if (!res.ok) throw new Error(data.error || 'Request failed');
         return data;
       });
@@ -115,7 +115,7 @@
   $('logoutBtn').addEventListener('click', function () {
     fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).finally(function () {
       try { localStorage.removeItem('mkulima_user'); } catch (x) {}
-      location.hash = '#/auth';
+      location.hash = '#/login';
     });
   });
 })(window.__r.dashboard);

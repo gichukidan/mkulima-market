@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 const { view, login, unique } = require('./helpers');
 
 test('register a new seller account from the sign-up form', async ({ page }) => {
-  await page.goto('/#/auth');
+  await page.goto('/#/signup');
   const a = view(page, 'auth');
   const email = unique('farmer') + '@example.com';
   const form = a.locator('#signupForm');

@@ -376,7 +376,8 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'Mkulima Market API is running' });
 });
 
-const ROLES = ['buyer', 'seller', 'transporter'];
+// New accounts are sellers or transporters; existing buyer accounts still log in.
+const ROLES = ['seller', 'transporter'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 app.post('/api/register', authLimiter, async (req, res) => {
@@ -385,7 +386,7 @@ app.post('/api/register', authLimiter, async (req, res) => {
     if (!fullName || !email || !password || !role) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-    if (!ROLES.includes(role)) return res.status(400).json({ error: 'Choose buyer, seller or transporter' });
+    if (!ROLES.includes(role)) return res.status(400).json({ error: 'Choose seller or transporter' });
     if (!EMAIL_RE.test(String(email).trim())) return res.status(400).json({ error: 'Enter a valid email address' });
     if (String(password).length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
     if (String(fullName).length > 120 || String(phone || '').length > 30) return res.status(400).json({ error: 'Name or phone is too long' });

@@ -1,74 +1,58 @@
-<section class="auth-shell" id="top">
-  <div class="w auth-wrap">
-    <div class="auth-card auth-panel">
-      <p class="eyebrow">Mkulima Market</p>
-      <h1>Log in or create your account</h1>
-      <p class="muted">Join as a buyer, seller or transporter and manage your profile from one place.</p>
+<!-- Log in (#/login, #/auth) and sign up (#/signup) are separate screens that share this view. -->
+<button id="lg" type="button" hidden>SW</button>
+<section class="auth" id="top">
+  <aside class="auth-art" aria-hidden="true">
+    <img src="/assets/images/landing/tea-farm-sm.webp" alt="" width="760" height="950">
+    <div class="art-copy">
+      <svg class="art-logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#f1f8f3"/><path d="M20 31V19" stroke="#2d6e4c" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#2d6e4c" stroke="none"/><path d="M20 24c0-4-2.5-6.5-8-6.5 0 4.5 2.5 6.5 8 6.5Z" fill="#60a77e" stroke="none"/></svg>
+      <p class="art-quote" data-t="artQ">Sell your harvest, fill your lorry, and get paid fairly.</p>
+      <p class="art-sub" data-t="artS">Farmers, fishers, herders and transporters across Kenya.</p>
+    </div>
+  </aside>
 
-      <div class="role-grid" id="roleGrid">
-        <button class="role-card" type="button" data-role="buyer" aria-pressed="false">
-          <span class="role-icon">🛒</span>
-          <span>Buyer</span>
-        </button>
-        <button class="role-card active" type="button" data-role="seller" aria-pressed="true">
-          <span class="role-icon">🌾</span>
-          <span>Seller</span>
-        </button>
-        <button class="role-card" type="button" data-role="transporter" aria-pressed="false">
-          <span class="role-icon">🚚</span>
-          <span>Transporter</span>
-        </button>
-      </div>
-
-      <form id="signupForm" class="auth-form">
-        <div class="field-row">
-          <label>
-            <span>Full name</span>
-            <input type="text" name="fullName" placeholder="e.g. Amina Wambui" required>
-          </label>
-        </div>
-        <div class="field-row two-col">
-          <label>
-            <span>Email</span>
-            <input type="email" name="email" placeholder="you@example.com" required>
-          </label>
-          <label>
-            <span>Phone</span>
-            <input type="tel" name="phone" placeholder="0712 345 678" required>
-          </label>
-        </div>
-        <div class="field-row">
-          <label>
-            <span>Password</span>
-            <input type="password" name="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
-          </label>
-        </div>
-        <button class="btn primary" type="submit">Create account</button>
+  <div class="auth-main">
+    <!-- LOG IN -->
+    <div class="panel" id="loginPanel">
+      <h1 data-t="liH">Welcome back</h1>
+      <p class="muted" data-t="liP">Log in to manage your listings and routes.</p>
+      <form id="loginForm" class="auth-form" novalidate>
+        <label><span data-t="email">Email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label><span data-t="pw">Password</span>
+          <span class="pw"><input type="password" name="password" data-p="pwPh" placeholder="Enter your password" autocomplete="current-password" required><button type="button" class="eye" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <p class="err" role="alert" hidden></p>
+        <button class="btn primary" type="submit" data-t="liB">Log in</button>
       </form>
+      <p class="switch"><span data-t="noAcc">Don't have an account?</span> <a href="#/signup" data-t="toSign">Sign up</a></p>
     </div>
 
-    <div class="auth-card login-panel">
-      <p class="eyebrow alt">Welcome back</p>
-      <h2>Log in</h2>
-      <form id="loginForm" class="auth-form compact">
-        <label>
-          <span>Email</span>
-          <input type="email" name="email" placeholder="you@example.com" required>
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" name="password" placeholder="Enter your password" required>
-        </label>
-        <button class="btn dark" type="submit">Sign in</button>
-      </form>
-      <div class="mini-note">
-        <strong>Why join?</strong>
-        <ul>
-          <li>Sell produce and manage listings</li>
-          <li>Find buyers or transport routes</li>
-          <li>Track your profile and marketplace activity</li>
-        </ul>
+    <!-- SIGN UP -->
+    <div class="panel" id="signupPanel" hidden>
+      <h1 data-t="suH">Create your account</h1>
+      <p class="muted" data-t="suP">Free to join. Choose how you will use Mkulima Market.</p>
+      <div class="role-grid" id="roleGrid" role="radiogroup" aria-label="Account type">
+        <button class="role-card" type="button" role="radio" data-role="seller" aria-checked="true">
+          <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 15 4 21 4c0 5-3 8-9 8ZM12 15c0-4-2.5-6.5-8-6.5 0 4.5 2.5 6.5 8 6.5Z"/></svg></span>
+          <span class="role-txt"><b data-t="rS">Seller</b><small data-t="rSp">Farmer, fisher, herder or trader</small></span>
+          <span class="radio" aria-hidden="true"></span>
+        </button>
+        <button class="role-card" type="button" role="radio" data-role="transporter" aria-checked="false">
+          <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.7a1 1 0 0 0-.2-.6l-3.3-4.1a1 1 0 0 0-.8-.4H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+          <span class="role-txt"><b data-t="rT">Transporter</b><small data-t="rTp">Lorry, pickup or motorbike owner</small></span>
+          <span class="radio" aria-hidden="true"></span>
+        </button>
       </div>
+      <form id="signupForm" class="auth-form" novalidate>
+        <label><span data-t="name">Full name</span><input type="text" name="fullName" placeholder="e.g. Amina Wambui" autocomplete="name" required></label>
+        <div class="two-col">
+          <label><span data-t="email">Email</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+          <label><span data-t="phone">Phone</span><input type="tel" name="phone" placeholder="0712 345 678" autocomplete="tel" required></label>
+        </div>
+        <label><span data-t="pw">Password</span>
+          <span class="pw"><input type="password" name="password" data-p="pwNew" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required><button type="button" class="eye" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+        <p class="err" role="alert" hidden></p>
+        <button class="btn primary" type="submit" data-t="suB">Create account</button>
+      </form>
+      <p class="switch"><span data-t="haveAcc">Already have an account?</span> <a href="#/login" data-t="toLog">Log in</a></p>
     </div>
   </div>
 </section>

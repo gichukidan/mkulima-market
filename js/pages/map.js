@@ -67,7 +67,7 @@ function updateLeafletView() {
         _leafletLayerGroup.clearLayers();
         _leafletMarkers = {};
         // draw radius circle
-        var circle = window.L.circle([loc.a, loc.o], { radius: (rad || 50) * 1000, color: '#4A9FE8', weight: 1, fillOpacity: 0.08 });
+        var circle = window.L.circle([loc.a, loc.o], { radius: (rad || 50) * 1000, color: '#2563EB', weight: 1, fillOpacity: 0.08 });
         circle.addTo(_leafletLayerGroup);
         // user marker
         var userMark = window.L.marker([loc.a, loc.o], { title: loc.n }).bindPopup('<strong>' + (loc.n||'You') + '</strong>');
@@ -78,7 +78,7 @@ function updateLeafletView() {
         items.forEach(function(it){
             if (!it.a || !it.o) return;
             // always include nearby items; distance already computed
-            var color = it.k=='m'? '#38A765' : it.k=='s'? '#F47721' : '#4A9FE8';
+            var color = it.k=='m'? '#1e4733' : it.k=='s'? '#60a77e' : '#2563EB'; // keep in sync with --c-m/--c-s/--c-t in css/map.css
             var marker = window.L.circleMarker([it.a, it.o], { radius: 8, color: '#fff', weight:1.2, fillColor: color, fillOpacity: 1 });
             var popup = '<strong>' + esc(it.n) + '</strong><div class="m">' + (it.k=='m'? T('unk') : (it.x && it.x[4]? (T('rating')+it.x[4]) : '')) + '</div><div class="small">' + (it.d?it.d.toFixed(1):'-') + ' km</div>';
             marker.bindPopup(popup);
@@ -113,11 +113,11 @@ function draw(items){var s="",i,p;
  for(i=34;i<=42;i+=2){p=px(0,i)[0];s+='<line x1="'+p+'" y1="0" x2="'+p+'" y2="700" stroke="currentColor" opacity=".12"/><text x="'+(p+3)+'" y="694" font-size="11" fill="currentColor" opacity=".5">'+i+'°E</text>'}
  for(i=-4;i<=4;i+=2){p=px(i,0)[1];s+='<line x1="0" y1="'+p+'" x2="576" y2="'+p+'" stroke="currentColor" opacity="'+(i==0?.3:.12)+'"/><text x="4" y="'+(p-4)+'" font-size="11" fill="currentColor" opacity=".5">'+(i>0?i+"°N":i<0?-i+"°S":"0°")+'</text>'}
  var c=px(loc.a,loc.o),r=rad/111.32*72;
- s+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+r+'" fill="#4A9FE8" fill-opacity=".12" stroke="#4A9FE8" stroke-width="2" stroke-dasharray="6 4"/>';
- items.forEach(function(it){var q=px(it.a,it.o),on=it.d<=rad,g='opacity="'+(on?1:.35)+'"',h=it.id===sel?8:6,f=it.k=="m"?"#38A765":it.k=="s"?"#F47721":"#4A9FE8";
+ s+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+r+'" fill="#2563EB" fill-opacity=".10" stroke="#2563EB" stroke-width="2" stroke-dasharray="6 4"/>';
+ items.forEach(function(it){var q=px(it.a,it.o),on=it.d<=rad,g='opacity="'+(on?1:.35)+'"',h=it.id===sel?8:6,f=it.k=="m"?"#1e4733":it.k=="s"?"#60a77e":"#2563EB";
   var sh=it.k=="m"?'<rect x="'+(q[0]-h)+'" y="'+(q[1]-h)+'" width="'+2*h+'" height="'+2*h+'" rx="2"/>':it.k=="s"?'<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+h+'"/>':'<path d="M'+q[0]+' '+(q[1]-h-1)+'L'+(q[0]+h+1)+' '+(q[1]+h)+'L'+(q[0]-h-1)+' '+(q[1]+h)+'Z"/>';
   s+='<g fill="'+f+'" stroke="#fff" stroke-width="1.5" '+g+' data-id="'+it.id+'" style="cursor:pointer" tabindex="0" role="button" aria-label="'+esc(it.n)+'">'+sh+'<title>'+esc(it.n)+'</title></g>'});
- s+='<circle class="pulse" cx="'+c[0]+'" cy="'+c[1]+'" r="14" fill="#164B35"/><circle cx="'+c[0]+'" cy="'+c[1]+'" r="6" fill="#164B35" stroke="#fff" stroke-width="2.5"/>';
+ s+='<circle class="pulse" cx="'+c[0]+'" cy="'+c[1]+'" r="14" fill="#2d6e4c"/><circle cx="'+c[0]+'" cy="'+c[1]+'" r="6" fill="#2d6e4c" stroke="#fff" stroke-width="2.5"/>';
  $("map").innerHTML=s}
 function card(it){var x=it.x,lab={m:T("mk"),s:T("sl"),t:T("tr")}[it.k],body;
  body=it.k=="m"?T("unk"):it.k=="s"?T("rating")+x[4]+" · "+T("area"):x[4]+" · "+T("cap")+x[5].toLocaleString()+" kg · "+T("svc")+x[6]+" km · "+x[7];

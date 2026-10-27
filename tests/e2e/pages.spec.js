@@ -6,7 +6,8 @@ const PAGES = [
   { hash: '#/home', view: 'home', heading: /Sell your harvest/i },
   { hash: '#/map', view: 'map', heading: /near you/i },
   { hash: '#/ai', view: 'ai', heading: /Ask Mkulima AI/i },
-  { hash: '#/auth', view: 'auth', heading: null },
+  { hash: '#/login', view: 'auth', heading: /Welcome back/i },
+  { hash: '#/signup', view: 'auth', heading: /Create your account/i },
   { hash: '#/seller-form', view: 'seller-form', heading: /Post a fresh produce listing/i },
   { hash: '#/transporter-form', view: 'transporter-form', heading: /Offer a transport route/i }
 ];
@@ -17,7 +18,7 @@ for (const p of PAGES) {
     await page.goto('/' + p.hash);
     const v = view(page, p.view);
     await expect(v).toBeVisible();
-    if (p.heading) await expect(v.locator('h1').first()).toHaveText(p.heading);
+    if (p.heading) await expect(v.locator('h1:visible').first()).toHaveText(p.heading);
     // No horizontal scrolling on any screen size.
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(1);
@@ -28,7 +29,7 @@ for (const p of PAGES) {
 
 test('dashboard sends guests to login', async ({ page }) => {
   await page.goto('/#/dashboard');
-  await expect(page).toHaveURL(/#\/auth/);
+  await expect(page).toHaveURL(/#\/login/);
 });
 
 test('dashboard shows the signed-in seller and their demo listings', async ({ page }) => {
@@ -44,7 +45,7 @@ test('mobile menu opens and navigates', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'mobile only');
   await page.goto('/#/home');
   await page.getByRole('button', { name: 'Menu' }).click();
-  await page.locator('#sl').getByRole('link', { name: 'Ask Mkulima AI' }).click();
+  await page.locator('#sl').getByRole('link', { name: 'Ask Mkulima' }).click();
   await expect(page).toHaveURL(/#\/ai/);
   await expect(view(page, 'ai')).toBeVisible();
 });
@@ -86,16 +87,15 @@ test.describe('dark mode readability', () => {
   }
 });
 
-test('landing page shows live listings, counts and switches to Kiswahili', async ({ page, isMobile }) => {
+test('landing page shows live listings and switches to Kiswahili', async ({ page, isMobile }) => {
   await page.goto('/#/home');
   const h = view(page, 'home');
   await expect(h.locator('#rail .card').first()).toBeVisible();
-  await expect(h.locator('#stListings')).not.toHaveText('–');
   await h.locator('#q').fill('potato');
   await h.getByRole('button', { name: 'Search' }).click();
   await expect(h.locator('#rail .card')).toHaveCount(1);
   if (isMobile) await page.getByRole('button', { name: 'Menu' }).click(); // language switch lives in the mobile menu
   await page.locator('#sl2').click(); // global language switch
   await expect(h.locator('h1')).toContainText('Uza mavuno yako');
-  await expect(page.locator('#sl a[data-k="map"]')).toHaveText('Ramani na usafiri');
+  await expect(page.locator('#sl a[data-k="map"]')).toHaveText('Usafiri');
 });

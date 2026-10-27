@@ -11,7 +11,7 @@
       body: body ? JSON.stringify(body) : undefined
     }).then(async function (res) {
       var data = await res.json().catch(function () { return {}; });
-      if (res.status === 401) { location.hash = '#/auth'; throw new Error('Please log in first.'); }
+      if (res.status === 401) { location.hash = '#/login'; throw new Error('Please log in first.'); }
       if (!res.ok) throw new Error(data.error || 'Request failed');
       return data;
     });
@@ -119,8 +119,11 @@
         var v = ctx.readForm();
         if (!v.commodity && !v.title) { ctx.say('Enter at least the commodity, then press Auto-write.', true); return; }
         btn.disabled = true;
-        var old = btn.textContent;
-        btn.textContent = 'Writing…';
+        // Only swap the text label so the sparkles icon stays in place.
+        var label = btn.querySelector('.btn-label') || btn;
+        var old = label.textContent;
+        label.textContent = 'Writing…';
+        btn.setAttribute('aria-busy', 'true');
         ctx.api('POST', '/api/ai/autowrite', Object.assign({ lang: document.documentElement.lang === 'sw' ? 'sw' : 'en' }, v))
           .then(function (r) {
             ctx.fill({ title: r.title, description: r.description });
@@ -128,7 +131,7 @@
             ctx.say('Draft written from your details. Check it, edit if needed, then save.', false);
           })
           .catch(function (e) { ctx.say(e.message, true); })
-          .finally(function () { btn.disabled = false; btn.textContent = old; });
+          .finally(function () { btn.disabled = false; btn.removeAttribute('aria-busy'); label.textContent = old; });
       });
     }
   });

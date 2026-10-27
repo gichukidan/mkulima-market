@@ -1,16 +1,51 @@
-<header><div class="w"><div class="bar"><span>Mkulima Market</span><div><button class="sq" id="lg"></button><button class="sq" id="th" data-t="dark"></button></div></div>
-<h1 data-t="h1"></h1><p data-t="lead"></p><div class="note" data-t="note"></div></div></header>
+<!-- Ask Mkulima AI: chat + listings panel, then market insights. Text lives in js/pages/ai.js. -->
+<button id="lg" type="button" hidden></button>
+<section class="app" id="top">
+  <div class="app-in">
+    <div class="chat" id="ai">
+      <header class="chat-head">
+        <span class="avatar lg-av"><svg viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></span>
+        <div class="ttl"><h1 data-t="h1"></h1><p data-t="lead"></p></div>
+        <button type="button" class="ghost-btn" id="newChat" disabled><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="newc"></span></button>
+      </header>
+      <div class="loc">
+        <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <select id="town" aria-label="Town"></select>
+        <button type="button" class="chip" id="gps"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg><span data-t="gps"></span></button>
+        <span class="m" id="locs" aria-live="polite"></span>
+      </div>
 
-<section id="ai"><div class="w"><h2 data-t="aiH"></h2><p class="m" style="margin-top:12px;max-width:44em" data-t="aiP"></p>
-<div class="row"><select id="town" aria-label="Town"></select><button class="btn o" id="gps" data-t="gps"></button><span class="m" id="locs"></span></div>
-<div class="chat"><div class="msgs" id="msgs" aria-live="polite"></div><div class="sug" id="sug"></div>
-<form class="in" id="f"><input type="text" id="q" maxlength="400" data-p="ph" aria-label="Message"><button class="btn" id="send" data-t="ask"></button></form></div></div></section>
+      <div class="scroll" id="scroll">
+        <div class="empty" id="empty">
+          <span class="avatar xl"><svg viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></span>
+          <h2 data-t="hello"></h2>
+          <p class="m" data-t="helloP"></p>
+          <div class="sug" id="sug"></div>
+        </div>
+        <div class="msgs" id="msgs" role="log" aria-live="polite" aria-relevant="additions"></div>
+      </div>
+      <button type="button" class="down" id="down" hidden aria-label="Scroll to latest message"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
 
-<section class="alt" id="intel"><div class="w"><h2><span data-t="miH"></span></h2><p class="m" style="margin-top:12px;max-width:44em" data-t="miP"></p>
+      <form class="composer" id="f">
+        <div class="box">
+          <textarea id="q" rows="1" maxlength="400" data-p="ph" aria-label="Message"></textarea>
+          <button class="send" id="send" type="submit" aria-label="Send"><svg class="i-send" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg><svg class="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg></button>
+        </div>
+        <p class="hint"><span data-t="hint"></span> <span class="count" id="count"></span></p>
+      </form>
+    </div>
+
+    <aside class="side" id="lst">
+      <h2 data-t="liH"></h2>
+      <p class="m" data-t="liP"></p>
+      <div class="lst" id="ls"></div>
+    </aside>
+  </div>
+</section>
+
+<section class="alt" id="intel"><div class="w"><h2 data-t="miH"></h2><p class="m" style="margin-top:12px;max-width:44em" data-t="miP"></p>
 <div class="row"><select id="series" aria-label="Series"></select></div>
-<div class="cg"><div class="cw"><div id="chart"></div><div class="lgd"><span><i style="background:#38A765;border-radius:50%"></i><b data-t="rep"></b></span><span><i style="background:#F47721;transform:rotate(45deg)"></i><b data-t="ask2"></b></span><span><i style="background:#4A9FE8"></i><b data-t="conf"></b></span></div></div>
+<div class="cg"><div class="cw"><div id="chart"></div><div class="lgd"><span><i class="k-rep"></i><b data-t="rep"></b></span><span><i class="k-ask"></i><b data-t="ask2"></b></span><span><i class="k-conf"></i><b data-t="conf"></b></span></div></div>
 <div><div class="m" data-t="trend"></div><div class="tr" id="tv"></div><p class="m" id="tn"></p></div></div>
 <div class="wrap" style="margin-top:28px"><table><thead><tr><th data-t="dt"></th><th data-t="ty"></th><th data-t="pc"></th><th data-t="src"></th></tr></thead><tbody id="tb"></tbody></table></div></div></section>
-
-<section id="lst"><div class="w"><h2><span data-t="liH"></span></h2><div class="lst" id="ls"></div></div></section>
 <footer><div class="w" data-t="foot"></div></footer>

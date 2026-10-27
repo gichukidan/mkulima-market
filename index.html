@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mkulima Market</title>
-<meta name="description" content="Kenyan agricultural marketplace: find produce, buyers, markets and transport. English and Kiswahili.">
-<meta name="theme-color" content="#164B35">
+<meta name="description" content="Kenyan agricultural marketplace: sell produce, find transport and read the market. English and Kiswahili.">
+<meta name="theme-color" content="#2d6e4c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e2018" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
@@ -13,17 +14,32 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mkulima">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script src="/js/theme.js?v={{ASSET_V}}"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/shell.css?v={{ASSET_V}}">
 <link rel="preload" href="/js/main.js?v={{ASSET_V}}" as="script">
 <link rel="preload" as="image" href="/assets/images/landing/hero.webp" media="(min-width: 761px)" fetchpriority="high">
 <link rel="preload" as="image" href="/assets/images/landing/hero-sm.webp" media="(max-width: 760px)" fetchpriority="high">
 </head>
 <body>
-<nav id="sn" aria-label="Main"><div class="sb"><a class="lo" href="#/home"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#38A765"/><path d="M20 31V19" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#fff"/><path d="M20 24c0-4-2.5-6.500-8-6.500 0 4.500 2.500 6.500 8 6.500Z" fill="#F47721"/></svg>Mkulima Market</a>
-<button type="button" id="hb" aria-label="Menu" aria-controls="sl" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-<div class="sl" id="sl"><a href="#/home" data-k="home" data-s="">Home</a><a href="#/home/produce" data-k="produce">Produce</a><a href="#/map" data-k="map">Map &amp; transport</a><a href="#/ai" data-k="ai">Ask Mkulima AI</a><a href="#/market" data-k="market">Market insights</a><a href="#/home/pricing" data-k="pricing">Pricing</a><a href="#/auth" data-k="auth">Log in / Sign up</a><button type="button" id="sl2" class="lng" aria-label="Badilisha lugha kuwa Kiswahili / Switch language">SW</button><button type="button" id="inst" class="inst" hidden>Install app</button></div></div></nav>
+<nav id="sn" aria-label="Main"><div class="sb">
+  <a class="lo" href="#/home" aria-label="Mkulima Market home"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2d6e4c"/><path d="M20 31V19" stroke="#f1f8f3" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#f1f8f3"/><path d="M20 24c0-4-2.5-6.5-8-6.5 0 4.5 2.5 6.5 8 6.5Z" fill="#8fc6a4"/></svg><span>Mkulima Market</span></a>
+  <div class="sl" id="sl">
+    <a href="#/home/produce" data-k="produce">Marketplace</a>
+    <a href="#/map" data-k="map">Transport</a>
+    <a href="#/home/pricing" data-k="pricing">Pricing</a>
+    <a href="#/home/faq" data-k="faq">FAQ</a>
+    <a href="#/ai" data-k="ai" class="ai-link"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg><span data-lbl>Ask Mkulima</span></a>
+    <div class="tools">
+      <button type="button" id="sl2" class="ib lng" aria-label="Badilisha lugha kuwa Kiswahili / Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg><b>SW</b></button>
+      <button type="button" id="sth" class="ib" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+      <button type="button" id="inst" class="ib inst" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Install</span></button>
+      <a href="#/login" data-k="login" class="login">Log in</a>
+    </div>
+  </div>
+  <button type="button" id="hb" aria-label="Menu" aria-controls="sl" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+</div></nav>
 <div class="view" id="v-home"></div><div class="view" id="v-map"></div><div class="view" id="v-ai"></div><div class="view" id="v-auth"></div><div class="view" id="v-dashboard"></div><div class="view" id="v-seller-form"></div><div class="view" id="v-transporter-form"></div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script src="/js/data/data.js?v={{ASSET_V}}"></script>
