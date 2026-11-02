@@ -13,7 +13,7 @@ test('register a new seller account from the sign-up form', async ({ page }) => 
   await form.locator('input[name="password"]').fill('GoodPass123');
   await form.locator('[type="submit"]').click();
   await expect(page).toHaveURL(/#\/dashboard/);
-  await expect(view(page, 'dashboard').locator('#profileName')).toHaveText('Wanjiku Test');
+  await expect(view(page, 'dashboard').locator('#dashGreeting')).toContainText('Wanjiku');
 });
 
 test('seller creates, edits, changes status of and deletes a listing', async ({ page }) => {
@@ -49,15 +49,15 @@ test('seller creates, edits, changes status of and deletes a listing', async ({ 
   await expect(card.locator('.price')).toContainText('KSh 28');
 
   // Status change from the dashboard
-  await card.locator('select[data-act="status"]').selectOption('sold');
+  await card.locator('select[data-act="status"]').selectOption('almost_out');
   await expect(d.locator('#dashStatus')).toContainText('Status updated');
-  await expect(card.locator('select[data-act="status"]')).toHaveValue('sold');
+  await expect(card.locator('select[data-act="status"]')).toHaveValue('almost_out');
 
   // Delete (two taps)
   const del = card.getByRole('button', { name: 'Delete' });
   await del.click();
   await card.getByRole('button', { name: 'Tap again' }).click();
-  await expect(d.locator('#dashStatus')).toContainText('Deleted');
+  await expect(d.locator('#dashStatus')).toContainText(/Deleted|removed/i);
   await expect(d.locator('.listing-card', { hasText: title })).toHaveCount(0);
 });
 
@@ -100,14 +100,32 @@ test('transporter creates, edits and deletes a route', async ({ page }) => {
 
 test('user edits their profile', async ({ page }) => {
   await login(page, 'buyer');
-  await page.goto('/#/dashboard');
-  const d = view(page, 'dashboard');
+  await page.goto('/#/profile');
+  const d = view(page, 'profile');
   await d.getByRole('button', { name: 'Edit profile' }).click();
   const where = unique('Westlands');
   await d.locator('#profileForm input[name="location"]').fill(where);
   await d.locator('#profileForm').getByRole('button', { name: 'Save profile' }).click();
-  await expect(d.locator('#dashStatus')).toContainText('Profile saved');
-  await expect(d.locator('#profileLocation')).toHaveText(where);
+  await expect(d.locator('#profileMsg')).toContainText('Profile saved');
+});
+
+test('marking a listing sold out deletes it', async ({ page }) => {
+  await login(page, 'seller2');
+  const title = unique('Sold test');
+  await page.goto('/#/seller-form');
+  const f = view(page, 'seller-form');
+  await f.locator('input[name="title"]').fill(title);
+  await f.locator('input[name="commodity"]').fill('Kale');
+  await f.locator('input[name="quantityKg"]').fill('10');
+  await f.locator('input[name="pricePerKg"]').fill('25');
+  await f.locator('input[name="location"]').fill('Mwea');
+  await f.locator('#sfSubmit').click();
+  await expect(page).toHaveURL(/#\/dashboard/);
+  const d = view(page, 'dashboard');
+  const card = d.locator('.listing-card', { hasText: title });
+  await card.locator('select[data-act="status"]').selectOption('sold');
+  await card.getByRole('button', { name: /Yes, sold out/ }).click();
+  await expect(d.locator('.listing-card', { hasText: title })).toHaveCount(0);
 });
 
 test('new listing drafts are auto-saved on the device', async ({ page }) => {

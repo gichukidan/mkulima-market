@@ -26,8 +26,9 @@
 <nav id="sn" aria-label="Main"><div class="sb">
   <a class="lo" href="#/home" aria-label="Mkulima Market home"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2d6e4c"/><path d="M20 31V19" stroke="#f1f8f3" stroke-width="3" stroke-linecap="round"/><path d="M20 21c0-5 3-8 9-8 0 5-3 8-9 8Z" fill="#f1f8f3"/><path d="M20 24c0-4-2.5-6.5-8-6.5 0 4.5 2.5 6.5 8 6.5Z" fill="#8fc6a4"/></svg><span>Mkulima Market</span></a>
   <div class="sl" id="sl">
+    <a href="#/home" data-k="home">Home</a>
     <a href="#/home/produce" data-k="produce">Marketplace</a>
-    <a href="#/map" data-k="map">Transport</a>
+    <a href="#/map" data-k="map">Map</a>
     <a href="#/home/pricing" data-k="pricing">Pricing</a>
     <a href="#/home/faq" data-k="faq">FAQ</a>
     <a href="#/ai" data-k="ai" class="ai-link"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg><span data-lbl>Ask Mkulima</span></a>
@@ -35,14 +36,21 @@
       <button type="button" id="sl2" class="ib lng" aria-label="Badilisha lugha kuwa Kiswahili / Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg><b>SW</b></button>
       <button type="button" id="sth" class="ib" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
       <button type="button" id="inst" class="ib inst" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Install</span></button>
-      <a href="#/login" data-k="login" class="login">Log in</a>
+      <div class="bellw" id="bellw" hidden>
+        <button type="button" id="bell" class="ib" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bn" id="bn" hidden>0</span></button>
+        <div class="bell-pop" id="bellPop" role="region" aria-label="Notifications" hidden></div>
+      </div>
+      <a href="#/dashboard" data-k="dashboard" class="dashl" id="dashl" hidden>Dashboard</a>
+      <a href="#/profile" data-k="profile" class="me" id="meL" hidden aria-label="My profile"><span id="meAv">M</span></a>
+      <a href="#/login" data-k="login" class="login" id="loginL">Log in</a>
     </div>
   </div>
   <button type="button" id="hb" aria-label="Menu" aria-controls="sl" aria-expanded="false"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div></nav>
-<div class="view" id="v-home"></div><div class="view" id="v-map"></div><div class="view" id="v-ai"></div><div class="view" id="v-auth"></div><div class="view" id="v-dashboard"></div><div class="view" id="v-seller-form"></div><div class="view" id="v-transporter-form"></div>
+<div class="view" id="v-home"></div><div class="view" id="v-map"></div><div class="view" id="v-ai"></div><div class="view" id="v-auth"></div><div class="view" id="v-dashboard"></div><div class="view" id="v-seller-form"></div><div class="view" id="v-transporter-form"></div><div class="view" id="v-profile"></div><div class="view" id="v-listing"></div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script src="/js/data/data.js?v={{ASSET_V}}"></script>
+<script src="/js/core.js?v={{ASSET_V}}"></script>
 <script src="/js/main.js?v={{ASSET_V}}"></script>
 </body>
 </html>

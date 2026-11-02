@@ -1,0 +1,41 @@
+/* Shared atoms for every view. Loaded first in each shadow root; a view's own CSS and dark.css can override. */
+:host{
+  --st-ok:#14683f;--st-ok-bg:#dff5e8;--st-ok-dot:#22c55e;
+  --st-warn:#7a4f00;--st-warn-bg:#fdf0b8;--st-warn-dot:#eab308;
+  --st-out:#b42318;--st-out-bg:#fdecea;
+  --st-mute:#4a5a52;--st-mute-bg:#e8eeea;
+  --star-on:#f2b01e;--star-off:#c9d6cd;--verify:#1d6fe0
+}
+:host([data-theme="dark"]){
+  --st-ok:#86efac;--st-ok-bg:#0f3a25;--st-ok-dot:#4ade80;
+  --st-warn:#fde68a;--st-warn-bg:#3d3208;--st-warn-dot:#facc15;
+  --st-out:#fca5a5;--st-out-bg:#3d1514;
+  --st-mute:#b5cdbf;--st-mute-bg:#1b3a2d;
+  --star-on:#fbbf24;--star-off:#2b5240;--verify:#60a5fa
+}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Listing status pill: green = available, yellow = almost out, grey = paused, red = sold out */
+.st{display:inline-flex;align-items:center;gap:6px;font:700 12.5px/1 'Plus Jakarta Sans',system-ui,sans-serif;padding:6px 11px;border-radius:999px;white-space:nowrap}
+.st i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.st-ok{color:var(--st-ok);background:var(--st-ok-bg)}.st-ok i{background:var(--st-ok-dot)}
+.st-warn{color:var(--st-warn);background:var(--st-warn-bg)}.st-warn i{background:var(--st-warn-dot)}
+.st-out{color:var(--st-out);background:var(--st-out-bg)}
+.st-mute{color:var(--st-mute);background:var(--st-mute-bg)}
+/* Star rating: --v is 0 to 5 and may be fractional */
+.stars{display:inline-block;letter-spacing:2px;font-size:1.05em;line-height:1;vertical-align:-.05em}
+.stars::before{content:"\2605\2605\2605\2605\2605";background:linear-gradient(90deg,var(--star-on) calc(var(--v,0)/5*100%),var(--star-off) 0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stars-none{color:var(--mute);font-size:.9em}
+.stars-n{font-weight:800}.stars-c{color:var(--mute);font-size:.9em}
+/* Blue verified tick */
+.vb{width:1.15em;height:1.15em;vertical-align:-.22em;fill:var(--verify);stroke:#fff;stroke-width:2;flex:none}
+/* Thumbs up / down */
+.thumb{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--surf,transparent);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:40px;font:700 14px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
+.thumb svg{width:18px;height:18px}
+.thumb:hover{transform:translateY(-1px)}
+.thumb.up:hover,.thumb.up[aria-pressed="true"]{border-color:var(--st-ok-dot);background:var(--st-ok-bg);color:var(--st-ok)}
+.thumb.down:hover,.thumb.down[aria-pressed="true"]{border-color:#ef4444;background:var(--st-out-bg);color:var(--st-out)}
+.thumb:disabled{opacity:.55;cursor:default;transform:none}
+/* Loading placeholder */
+.skel{border-radius:14px;background:linear-gradient(90deg,var(--line) 25%,var(--surf2,var(--soft,var(--line))) 50%,var(--line) 75%);background-size:200% 100%;animation:skel 1.3s linear infinite;min-height:84px}
+@keyframes skel{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.skel{animation:none}}

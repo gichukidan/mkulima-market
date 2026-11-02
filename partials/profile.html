@@ -1,0 +1,120 @@
+<section class="pf" id="top">
+  <div class="w">
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <div id="loading" class="loading" aria-busy="true">
+      <div class="skel" style="min-height:190px"></div>
+      <div class="two"><div class="skel" style="min-height:260px"></div><div class="skel" style="min-height:260px"></div></div>
+    </div>
+
+    <div id="notfound" class="empty-state" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      <h1 data-t="nf_h">Profile not found</h1>
+      <p data-t="nf_p">This person may have deleted their account, or the link is wrong.</p>
+      <a class="btn primary" href="#/home/produce" data-t="back_market">Back to marketplace</a>
+    </div>
+
+    <div id="errbox" class="empty-state" hidden>
+      <h1 data-t="err_h">Could not load this profile</h1>
+      <p id="errmsg"></p>
+      <button class="btn primary" type="button" id="retry" data-t="retry">Try again</button>
+    </div>
+
+    <div id="main" hidden>
+      <header class="card head" id="head"></header>
+
+      <div class="card lists" id="listPanel" hidden>
+        <div class="sec-head"><h2 id="listTitle"></h2><button class="btn small outline" type="button" id="listClose" data-t="close">Close</button></div>
+        <div id="listBody"></div>
+      </div>
+
+      <div class="cols">
+        <div class="col">
+          <section class="card" aria-labelledby="h-det">
+            <div class="sec-head"><h2 id="h-det" data-t="h_det">User details</h2></div>
+            <dl class="det" id="details"></dl>
+          </section>
+
+          <section class="card" id="sugCard" aria-labelledby="h-sug" hidden>
+            <div class="sec-head"><h2 id="h-sug" data-t="h_sug">Suggested for you</h2></div>
+            <p class="hint" data-t="sug_p">People you may want to follow.</p>
+            <div id="sugBody"></div>
+          </section>
+
+          <section class="card" id="rateCard" aria-labelledby="h-rate" hidden>
+            <div class="sec-head"><h2 id="h-rate" data-t="h_rate">Rate this person</h2></div>
+            <div id="rateGuest" hidden>
+              <p class="hint" data-t="rate_guest_p">Ratings are given after a real transaction.</p>
+              <a class="btn primary" href="#/login" data-t="rate_login">Log in to rate</a>
+            </div>
+            <form id="rateForm" novalidate>
+              <p class="hint" id="rateNote"></p>
+              <fieldset class="starset">
+                <legend data-t="rate_legend">Your rating (1 to 5 stars)</legend>
+                <div class="starrow" id="starrow">
+                  <input type="radio" name="stars" id="st1" value="1"><label for="st1"><span class="sr-only" data-t="s1">1 star</span><span aria-hidden="true">&#9733;</span></label>
+                  <input type="radio" name="stars" id="st2" value="2"><label for="st2"><span class="sr-only" data-t="s2">2 stars</span><span aria-hidden="true">&#9733;</span></label>
+                  <input type="radio" name="stars" id="st3" value="3"><label for="st3"><span class="sr-only" data-t="s3">3 stars</span><span aria-hidden="true">&#9733;</span></label>
+                  <input type="radio" name="stars" id="st4" value="4"><label for="st4"><span class="sr-only" data-t="s4">4 stars</span><span aria-hidden="true">&#9733;</span></label>
+                  <input type="radio" name="stars" id="st5" value="5"><label for="st5"><span class="sr-only" data-t="s5">5 stars</span><span aria-hidden="true">&#9733;</span></label>
+                </div>
+              </fieldset>
+              <label class="fld"><span data-t="rate_comment">Comment (optional)</span>
+                <textarea name="comment" id="rateComment" maxlength="500" rows="3" data-p="rate_comment_p" placeholder="How was it to deal with this person?"></textarea>
+              </label>
+              <label class="chk"><input type="checkbox" id="rateDone"><span data-t="rate_done">I completed a transaction with this person</span></label>
+              <div class="row"><button class="btn primary" type="submit" id="rateBtn" data-t="rate_submit">Submit rating</button></div>
+              <p id="rateMsg" class="msg" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="card" aria-labelledby="h-lst" id="lstCard" hidden>
+            <div class="sec-head"><h2 id="h-lst" data-t="h_lst">Listings</h2></div>
+            <div id="lstBody"></div>
+          </section>
+
+          <section class="card" aria-labelledby="h-rts" id="rtsCard" hidden>
+            <div class="sec-head"><h2 id="h-rts" data-t="h_rts">Transport routes</h2></div>
+            <div id="rtsBody"></div>
+          </section>
+
+          <section class="card" aria-labelledby="h-rev">
+            <div class="sec-head"><h2 id="h-rev" data-t="h_rev">Reviews</h2></div>
+            <div id="revBody"></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="card" id="editCard" aria-labelledby="h-edit" hidden>
+        <div class="sec-head"><h2 id="h-edit" data-t="h_edit">Edit profile</h2></div>
+        <form id="profileForm" class="gform">
+          <label class="fld"><span data-t="f_name">Full name</span><input name="fullName" required maxlength="120" autocomplete="name"></label>
+          <label class="fld"><span data-t="f_phone">Phone</span><input name="phone" type="tel" maxlength="30" autocomplete="tel"></label>
+          <label class="fld"><span data-t="f_loc">Location (town or market)</span><input name="location" maxlength="80"></label>
+          <label class="fld"><span data-t="f_biz">Business type</span><input name="businessType" maxlength="80" data-p="f_biz_p" placeholder="e.g. Smallholder farmer"></label>
+          <label class="fld full"><span data-t="f_spec">Speciality</span><input name="speciality" maxlength="200" data-p="f_spec_p" placeholder="e.g. Potatoes, cabbages"></label>
+          <div class="full row"><button class="btn primary" type="submit" data-t="save_profile">Save profile</button></div>
+          <p id="profileMsg" class="msg full" role="status" aria-live="polite"></p>
+        </form>
+        <hr>
+        <h3 data-t="h_pw">Change password</h3>
+        <form id="passwordForm" class="gform">
+          <label class="fld"><span data-t="f_curpw">Current password</span><input name="currentPassword" type="password" autocomplete="current-password" required></label>
+          <label class="fld"><span data-t="f_newpw">New password (at least 8 characters)</span><input name="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+          <div class="full row"><button class="btn outline" type="submit" data-t="change_pw">Change password</button></div>
+          <p id="passwordMsg" class="msg full" role="status" aria-live="polite"></p>
+        </form>
+        <hr>
+        <h3 class="dng" data-t="h_del">Delete my account</h3>
+        <form id="deleteForm" class="gform">
+          <p class="hint full" data-t="del_p">This deletes your account and everything you posted. It cannot be undone.</p>
+          <label class="fld"><span data-t="f_delpw">Confirm with your password</span><input name="password" type="password" autocomplete="current-password" required></label>
+          <div class="full row"><button class="btn danger" type="submit" id="delBtn" data-t="del_btn">Delete my account</button></div>
+          <p id="deleteMsg" class="msg full" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+  </div>
+</section>

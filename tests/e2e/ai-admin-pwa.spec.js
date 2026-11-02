@@ -38,19 +38,21 @@ test('Auto-write fills the listing title and description (mocked AI)', async ({ 
   await expect(f.locator('textarea[name="description"]')).toHaveValue(/Ol Kalou/);
 });
 
-test('admin manages knowledge base articles (create, edit, delete)', async ({ page }) => {
+test('admin manages knowledge base articles (create, edit, delete)', async ({ page, isMobile }) => {
   page.on('dialog', (d) => d.accept());
   await page.goto('/admin');
   await page.locator('#adminEmail').fill(ADMIN.email);
   await page.locator('#adminPassword').fill(ADMIN.password);
-  await page.getByRole('button', { name: 'Login' }).click();
-  await expect(page.locator('#kbTable tr').first()).toBeVisible();
+  await page.locator('#loginBtn').click();
+  if (isMobile) await page.locator('#menuBtn').click();
+  await page.locator('.nav-btn[data-sec="kb"]').click();
+  await expect(page.locator('#kbBox')).toBeVisible();
 
   const title = unique('Maize drying tips');
   await page.locator('#kbTitle').fill(title);
   await page.locator('#kbBody').fill('Dry maize well before storage and keep it off the floor.');
   await page.locator('#kbSave').click();
-  const row = page.locator('#kbTable tr', { hasText: title });
+  const row = page.locator('#kbBox tbody tr', { hasText: title });
   await expect(row).toBeVisible();
 
   // The new article is searchable by the AI's retrieval endpoint.
@@ -60,10 +62,11 @@ test('admin manages knowledge base articles (create, edit, delete)', async ({ pa
   await row.getByRole('button', { name: 'Edit' }).click();
   await page.locator('#kbPublished').uncheck();
   await page.locator('#kbSave').click();
-  await expect(row).toContainText('No');
+  await expect(row).toContainText('no');
 
   await row.getByRole('button', { name: 'Delete' }).click();
-  await expect(page.locator('#kbTable tr', { hasText: title })).toHaveCount(0);
+  await row.locator('button.armed').click();
+  await expect(page.locator('#kbBox tbody tr', { hasText: title })).toHaveCount(0);
 });
 
 test('private files are never served and assets are cached', async ({ request }) => {

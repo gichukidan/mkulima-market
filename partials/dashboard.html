@@ -1,83 +1,97 @@
-<section class="dashboard-shell" id="top">
-  <div class="w dashboard-wrap">
-    <aside class="profile-card">
-      <div class="avatar" id="profileAvatar">M</div>
-      <div>
-        <p class="eyebrow">Profile</p>
-        <h1 id="profileName">Loading…</h1>
+<section class="dash" id="top">
+  <div class="col">
+    <header class="head">
+      <div class="head-main">
+        <h1 id="dashGreeting">Hello</h1>
+        <div class="pills" id="headPills"></div>
       </div>
-      <div class="badge-row">
-        <span class="pill" id="profileRole">—</span>
-        <span class="pill outline" id="profileLocation">—</span>
+      <div class="head-actions">
+        <a class="btn primary" id="primaryAction" href="#/seller-form" hidden><span id="primaryLabel">Add listing</span></a>
+        <a class="btn outline" href="#/profile" data-t="myProfile">My profile</a>
+        <button class="btn outline" id="logoutBtn" type="button" data-t="logout">Log out</button>
       </div>
-      <div class="contact-list">
-        <p><strong>Email:</strong> <span id="profileEmail">—</span></p>
-        <p><strong>Phone:</strong> <span id="profilePhone">—</span></p>
-      </div>
-      <button class="btn outline" id="editProfileBtn" type="button" aria-expanded="false" aria-controls="profilePanel">Edit profile</button>
-      <button class="btn outline logout" id="logoutBtn" type="button">Log out</button>
-    </aside>
+    </header>
 
-    <main class="content-panel">
-      <p id="dashStatus" class="dash-status" role="status" aria-live="polite"></p>
+    <p id="dashStatus" class="dash-status" role="status" aria-live="polite"></p>
 
-      <div class="stats-grid">
-        <div class="stat-box"><span class="label">Active listings</span><strong id="statListings">0</strong></div>
-        <div class="stat-box"><span class="label">All listings</span><strong id="statAll">0</strong></div>
-        <div class="stat-box"><span class="label">Transport routes</span><strong id="statRoutes">0</strong></div>
-        <div class="stat-box"><span class="label">Rating</span><strong id="statRating" title="Ratings start after your first completed trade">—</strong></div>
-      </div>
+    <section class="stats" id="stats" aria-label="Overview" data-a="overview"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></section>
 
-      <!-- Profile edit, password and account deletion -->
-      <div class="panel-card" id="profilePanel" hidden>
-        <div class="section-head"><h2>Edit profile</h2></div>
-        <form id="profileForm" class="grid-form">
-          <label>Full name<input name="fullName" required maxlength="120"></label>
-          <label>Phone<input name="phone" type="tel" maxlength="30"></label>
-          <label>Location (town or market)<input name="location" maxlength="80"></label>
-          <label>Business type<input name="businessType" maxlength="80" placeholder="e.g. Smallholder farmer"></label>
-          <label class="full">Speciality<input name="speciality" maxlength="200" placeholder="e.g. Potatoes, cabbages"></label>
-          <div class="full row-actions"><button class="btn primary" type="submit">Save profile</button></div>
+    <section class="card" id="chartCard">
+      <div class="skel tall"></div>
+    </section>
+
+    <section class="card" id="badgeCard">
+      <div class="skel tall"></div>
+    </section>
+
+    <section class="card" id="adCard">
+      <h2 data-t="adsTitle">Adverts and sponsored listings</h2>
+      <p class="sub" data-t="adsIntro">Our team reviews every request and confirms details and price before it goes live.</p>
+      <div class="two">
+        <form id="advertForm" class="box" novalidate>
+          <h3 data-t="createAdvert">Create an advert</h3>
+          <label>
+            <span data-t="advTitle">Title</span>
+            <input name="title" maxlength="80" required autocomplete="off">
+          </label>
+          <label>
+            <span data-t="advText">Text (optional)</span>
+            <textarea name="body" rows="3" maxlength="300"></textarea>
+          </label>
+          <label>
+            <span data-t="advLink">Link (optional, must start with https://)</span>
+            <input name="linkUrl" type="url" maxlength="200" inputmode="url" data-p="linkPh" placeholder="https://" autocomplete="off">
+          </label>
+          <button class="btn primary" type="submit" data-t="sendRequest">Send request</button>
         </form>
-        <hr>
-        <form id="passwordForm" class="grid-form">
-          <label>Current password<input name="currentPassword" type="password" autocomplete="current-password" required></label>
-          <label>New password<input name="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
-          <div class="full row-actions"><button class="btn outline" type="submit">Change password</button></div>
-        </form>
-        <hr>
-        <form id="deleteForm" class="grid-form">
-          <p class="full muted">Delete your account and everything you posted. This cannot be undone.</p>
-          <label>Confirm with your password<input name="password" type="password" autocomplete="current-password" required></label>
-          <div class="row-actions"><button class="btn danger" type="submit">Delete my account</button></div>
+        <form id="sponsorForm" class="box" novalidate>
+          <h3 data-t="sponsorTitle">Sponsor a listing</h3>
+          <p class="hint" data-t="sponsorHint">Sponsored listings appear first in the marketplace.</p>
+          <label>
+            <span data-t="sponsorPick">Choose one of your listings</span>
+            <select name="listingId" id="sponsorSelect"></select>
+          </label>
+          <button class="btn primary" type="submit" id="sponsorBtn" data-t="sendRequest">Send request</button>
         </form>
       </div>
+      <h3 class="sub-h" data-t="myRequests">My requests</h3>
+      <div id="advertList"></div>
+    </section>
 
-      <div class="panel-card">
-        <div class="section-head">
-          <h2>My listings</h2>
-          <a class="btn small primary" href="#/seller-form">Add listing</a>
-        </div>
-        <div class="listing-grid" id="listingGrid"></div>
+    <section class="card" id="notifCard">
+      <div class="card-head">
+        <h2 data-t="notifTitle">Notifications</h2>
+        <button class="btn small outline" id="markAll" type="button" data-t="markAll">Mark all read</button>
       </div>
+      <div id="notifList"><div class="skel"></div></div>
+    </section>
 
-      <div class="panel-card">
-        <div class="section-head">
-          <h2>My transport routes</h2>
-          <a class="btn small primary" href="#/transporter-form">Add route</a>
-        </div>
-        <div class="listing-grid" id="routeGrid"></div>
+    <section class="card" id="listingsCard">
+      <div class="card-head">
+        <h2 data-t="myListings">My listings</h2>
+        <a class="btn small outline" href="#/seller-form" data-t="addListing">Add listing</a>
       </div>
+      <div id="listingGrid" class="stack"><div class="skel"></div></div>
+    </section>
 
-      <div class="panel-card actions-panel">
-        <div class="section-head"><h2>Quick actions</h2></div>
-        <div class="action-grid">
-          <a class="action-card" href="#/seller-form"><span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span><strong>Sell produce</strong><small>Create a listing (Auto-write helps)</small></a>
-          <a class="action-card" href="#/transporter-form"><span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><strong>Offer transport</strong><small>Create a route</small></a>
-          <a class="action-card" href="#/ai"><span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg></span><strong>Ask Mkulima AI</strong><small>Find produce, sellers and advice</small></a>
-          <a class="action-card" href="#/map"><span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></span><strong>Map</strong><small>Sellers and transport near you</small></a>
-        </div>
+    <section class="card" id="routesCard">
+      <div class="card-head" id="routesHead">
+        <h2 data-t="myRoutes">My transport routes</h2>
+        <a class="btn small outline" href="#/transporter-form" data-t="addRoute">Add route</a>
       </div>
-    </main>
+      <div id="routeGrid" class="stack"><div class="skel"></div></div>
+      <div id="quotes"></div>
+    </section>
+
+    <section class="card" id="planCard"></section>
+
+    <section class="card" id="locCard">
+      <h2 data-t="locTitle">Set my location</h2>
+      <p class="sub" data-t="locText">Saving where you are helps buyers and transporters find you on the Map.</p>
+      <div class="row">
+        <button class="btn outline" id="locBtn" type="button" data-t="locBtn">Use my current location</button>
+        <a class="link" href="#/map" data-t="openMap">Open the Map</a>
+      </div>
+    </section>
   </div>
 </section>

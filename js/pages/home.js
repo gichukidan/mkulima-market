@@ -39,13 +39,13 @@
     ad1: "Tangazo lililodhaminiwa", ad1s: "Tangazo lako juu ya matokeo ya utafutaji na makundi", ad2: "Tangazo la ukurasa wa mbele", ad2s: "Bango linaloonwa na kila mgeni sokoni", ad3: "Mshirika maalum", ad3s: "Wasifu maalum kwa wauzaji wa pembejeo, vyama na maduka ya kilimo",
     adB: "Uliza kuhusu matangazo", adF: "Matangazo huandikwa \"Sponsored\" kila wakati. Hayabadilishi ukadiriaji wala usawa wa utafutaji.",
     bH: "Pata beji ya buluu", bP: "Timu yetu hutembelea shamba, biashara au gari lako na kuthibitisha ni halisi. Wasifu uliothibitishwa huonyesha beji ya buluu, na wanunuzi wanakuamini haraka.",
-    bw1: "Mkulima", bw2: "Muuzaji", bw3: "Msafirishaji", bf1: "Omba", bf1p: "Lipa KSh 2,000 mara moja", bf2: "Tunakutembelea", bf2p: "Wakala hukagua ana kwa ana", bf3: "Beji inaonekana", bf3p: "Kwenye wasifu na matangazo yako", once: " mara moja", bB: "Omba beji ya buluu",
+    bw1: "Mkulima", bw2: "Muuzaji", bw3: "Msafirishaji", bf1: "Omba", bf1p: "Lipa KSh 2,000 kila miezi 6", bf2: "Tunakutembelea", bf2p: "Wakala hukagua ana kwa ana", bf3: "Beji inaonekana", bf3p: "Kwenye wasifu na matangazo yako", once: " kila miezi 6", bB: "Pata beji ya buluu", bRenew: "Beji ya buluu hudumu miezi 6 na lazima ifanywe upya kila baada ya miezi 6. Kulipa pekee hakuipi: hutolewa tu baada ya ziara ya timu yetu.",
     fqH: "Maswali, majibu", fqP: "Kila kitu kuhusu kuuza, usafiri na akaunti yako.", fa: "Yote", fs: "Kuuza", fm: "Usafiri", fc: "Akaunti na usalama", fqA: "Bado una swali?", fqB: "Uliza Mkulima AI",
     q0: "Nani anaweza kujiunga na Mkulima Market?", q0a: "Wauzaji (wakulima, wavuvi, wafugaji na wafanyabiashara) na wasafirishaji wanaweza kufungua akaunti. Mtu yeyote anaweza kuangalia matangazo na kuuliza Mkulima AI bila akaunti.",
     q1: "Je, Mkulima Market ni bure?", q1a: "Ndiyo. Kuangalia na kuuliza Mkulima AI ni bure. Wauzaji wanaweza kuweka hadi matangazo 5 bure, kila moja na picha 5.",
     q2: "Nitalipwa vipi?", q2a: "Mnakubaliana malipo moja kwa moja na mnunuzi, kwa kawaida M-Pesa. Pima na kagua mazao kwanza, na hifadhi ujumbe wa M-Pesa kama kumbukumbu.",
     q6: "Wasafirishaji hupataje mizigo?", q6a: "Weka njia, gari na uwezo wako. Wauzaji walio njiani mwako hukuona kwenye ramani, na Mkulima AI hukupendekeza mtu anapohitaji usafiri.",
-    q7: "Beji ya buluu ni nini?", q7a: "Uthibitisho wa mara moja wa KSh 2,000. Timu yetu hutembelea shamba, biashara au gari lako, na wasifu uliothibitishwa huonyesha beji ya buluu. Kulipa pekee hakutoshi.",
+    q7: "Beji ya buluu ni nini?", q7a: "KSh 2,000 kila miezi 6, na hufanywa upya baada ya miezi 6 (si mara moja tu). Timu yetu hutembelea shamba, biashara au gari lako, na wasifu uliothibitishwa huonyesha beji ya buluu. Lazima uifanye upya kila miezi 6, na kulipa pekee hakuipi.",
     q3: "Naweza kuitumia kwa Kiswahili?", q3a: "Ndiyo. Badilisha lugha juu ya ukurasa wowote, na muulize Mkulima AI kwa Kiswahili.",
     q4: "Je, eneo langu linaonyeshwa?", q4a: "Ni eneo la makadirio pekee (takriban km 1) linaloonyeshwa, si shamba wala nyumba yako.",
     q5: "Inafanya kazi bila intaneti?", q5a: "Isakinishe kutoka kwenye kivinjari. Kurasa ulizofungua zinaendelea kufanya kazi bila mtandao, na data mpya huja ukiunganika tena.",
@@ -151,18 +151,62 @@
   var pin = '<svg class="ic" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
   var box = '<svg class="ic" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>';
 
+  var I_EYE = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var I_UP = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v11H3V10zM7 10l4-8a3 3 0 0 1 3 3v4h6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.6 21H7"/></svg>';
+  var I_DOWN = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 14V3h4v11zM17 14l-4 8a3 3 0 0 1-3-3v-4H4a2 2 0 0 1-2-2.3l1.4-8A2 2 0 0 1 5.4 3H17"/></svg>';
+  function stat(icon, n, text) {
+    n = Number(n || 0);
+    return '<span class="cs">' + icon + '<b aria-hidden="true">' + n.toLocaleString('en-KE') + '</b><span class="sr">' + esc(text(n)) + '</span></span>';
+  }
+
   function card(l) {
-    var low = l.status === 'almost_out';
-    return '<article class="card">' +
-      '<div class="im"><img src="/assets/images/landing/' + imgFor(l.commodity + ' ' + l.title) + '-sm.webp" alt="" loading="lazy" width="480" height="360">' +
-      '<span class="badge' + (low ? ' low' : '') + '">' + (low ? L('Almost out', 'Karibu kuisha') : L('Available', 'Inapatikana')) + '</span>' +
+    var photo = l.image_id ? '/api/listing-images/' + Number(l.image_id) : '/assets/images/landing/' + imgFor(l.commodity + ' ' + l.title) + '-sm.webp';
+    return '<a class="card" href="#/listing/' + Number(l.id) + '">' +
+      '<div class="im"><img src="' + photo + '" alt="" loading="lazy" width="480" height="360">' +
+      '<span class="stp">' + MK.statusPill(l.status) + '</span>' +
       (l.is_demo ? '<span class="badge demo">Demo</span>' : '') + '</div>' +
-      '<div class="b"><h3>' + esc(l.title) + '</h3>' +
+      '<div class="b">' + (l.sponsored ? '<span class="spon">' + L('Sponsored', 'Imedhaminiwa') + '</span>' : '') + '<h3>' + esc(l.title) + '</h3>' +
       '<div class="price">' + money(l.price_per_kg) + ' <small>/ kg, ' + L('asking', 'bei ya kuuliza') + '</small></div>' +
       '<div class="meta"><span>' + box + Number(l.quantity_kg).toLocaleString('en-KE') + ' kg</span><span>' + pin + esc(l.area || '-') + '</span></div>' +
-      '<div class="seller">' + esc(l.seller_name) + (l.grade ? ', ' + L('Grade ', 'Daraja ') + esc(l.grade) : '') + '</div>' +
-      '</div></article>';
+      '<div class="seller"><span class="sn">' + esc(l.seller_name) + (l.seller_verified ? ' ' + MK.verified() : '') + (l.grade ? ', ' + L('Grade ', 'Daraja ') + esc(l.grade) : '') + '</span>' +
+      '<span class="cstats">' +
+        stat(I_EYE, l.views, function (n) { return L(n + ' views', 'mitazamo ' + n); }) +
+        stat(I_UP, l.likes, function (n) { return L(n + ' thumbs up', 'vidole gumba ' + n + ' juu'); }) +
+        stat(I_DOWN, l.dislikes, function (n) { return L(n + ' thumbs down', 'vidole gumba ' + n + ' chini'); }) +
+      '</span></div>' +
+      '</div></a>';
   }
+
+  /* ---------- Sponsored adverts strip (only real, admin-approved adverts) ---------- */
+  var adverts = [];
+  function renderAdverts() {
+    var strip = $('ads');
+    if (!adverts.length) { strip.hidden = true; $('adsRow').innerHTML = ''; return; }
+    strip.hidden = false;
+    $('adsRow').innerHTML = adverts.map(function (a, i) {
+      return '<button type="button" class="adc" data-i="' + i + '"><span class="spon">' + L('Sponsored', 'Imedhaminiwa') + '</span>' +
+        '<b>' + esc(a.title) + '</b>' + (a.body ? '<span class="adb">' + esc(a.body) + '</span>' : '') +
+        (a.advertiser ? '<small>' + esc(a.advertiser) + '</small>' : '') + '</button>';
+    }).join('');
+  }
+  $('adsRow').addEventListener('click', function (e) {
+    var b = e.target.closest('.adc'); if (!b) return;
+    var a = adverts[Number(b.dataset.i)]; if (!a) return;
+    try { fetch('/api/adverts/' + Number(a.id) + '/click', { method: 'POST', keepalive: true }); } catch (x) {}
+    if (a.link_url && /^https?:\/\//i.test(a.link_url)) window.open(a.link_url, '_blank', 'noopener,noreferrer');
+    else if (a.listing_id) location.hash = '#/listing/' + Number(a.listing_id);
+  });
+  function loadAdverts() {
+    fetch('/api/adverts/active').then(function (r) { return r.json(); })
+      .then(function (d) { adverts = Array.isArray(d.adverts) ? d.adverts : []; renderAdverts(); })
+      .catch(function () { adverts = []; renderAdverts(); });
+  }
+
+  /* ---------- Blue badge call to action: dashboard when signed in, sign-up otherwise ---------- */
+  function badgeCta() { var a = $('badgeCta'); if (a) a.setAttribute('href', window.MK && MK.me ? '#/dashboard' : '#/signup'); }
+  document.addEventListener('mk:auth', badgeCta);
+  document.addEventListener('mk:route', badgeCta);
+  [300, 1200, 3000].forEach(function (ms) { setTimeout(badgeCta, ms); });
 
   function render() {
     if (!loaded) { $('rail').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>'; $('empty').hidden = true; return; }
@@ -328,7 +372,7 @@
     root.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.dataset.t); });
     root.querySelectorAll('[data-p]').forEach(function (e) { e.placeholder = lang === 'sw' ? SW[e.dataset.p] : EN['p_' + e.dataset.p]; });
     $('lang').textContent = lang === 'en' ? 'SW' : 'EN';
-    chips(); render(); dots(); playChat(false); adPreview(); badge();
+    chips(); render(); renderAdverts(); dots(); playChat(false); adPreview(); badge(); badgeCta();
   }
 
   // The global navbar's language button clicks this hidden button (see js/shell.js).
@@ -356,5 +400,6 @@
   apply();
   setPaused(reduced);
   loadListings('');
+  loadAdverts();
   credits();
 })(window.__r.home);

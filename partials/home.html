@@ -57,6 +57,7 @@
     <div class="track" id="cats"></div>
   </div>
   <div class="w">
+    <div class="ads" id="ads" hidden><div class="ads-row" id="adsRow"></div></div>
     <p class="cat-now" id="catNow" aria-live="polite"></p>
     <div class="grid-cards" id="rail" aria-live="polite"></div>
     <div class="empty" id="empty" hidden>
@@ -216,8 +217,9 @@
         <button type="button" role="tab" aria-selected="false" data-w="trans" data-t="bw3">Transporter</button>
       </div>
       <ul class="ticks" id="badgeChecks"></ul>
-      <ol class="flow"><li><b data-t="bf1">Request</b><span data-t="bf1p">Pay KSh 2,000 once</span></li><li><b data-t="bf2">We visit</b><span data-t="bf2p">An agent checks in person</span></li><li><b data-t="bf3">Badge goes live</b><span data-t="bf3p">On your profile and listings</span></li></ol>
-      <div class="badge-cta"><p class="amt">KSh 2,000<small data-t="once"> one-time</small></p><a class="btn blue" href="#/signup"><svg class="ic" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg><span data-t="bB">Request blue badge</span></a></div>
+      <ol class="flow"><li><b data-t="bf1">Request</b><span data-t="bf1p">Pay KSh 2,000 every 6 months</span></li><li><b data-t="bf2">We visit</b><span data-t="bf2p">An agent checks in person</span></li><li><b data-t="bf3">Badge goes live</b><span data-t="bf3p">On your profile and listings</span></li></ol>
+      <div class="badge-cta"><p class="amt">KSh 2,000<small data-t="once"> every 6 months</small></p><a class="btn blue" id="badgeCta" href="#/signup"><svg class="ic" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg><span data-t="bB">Get the blue badge</span></a></div>
+      <p class="renew" data-t="bRenew">The blue badge lasts 6 months and must be renewed every 6 months. Paying alone never earns it: it is given only after our team's visit.</p>
     </div>
   </div>
 </section>
@@ -244,7 +246,7 @@
       <details name="faq" data-c="sell"><summary><span data-t="q1">Is Mkulima Market free to use?</span><i></i></summary><div class="ans"><p data-t="q1a">Yes. Browsing and asking Mkulima AI are free. Sellers can keep up to 5 listings live for free, with 5 photos each.</p></div></details>
       <details name="faq" data-c="sell"><summary><span data-t="q2">How do I get paid?</span><i></i></summary><div class="ans"><p data-t="q2a">You agree payment directly with the buyer, usually M-Pesa. Weigh and inspect produce first, and keep your M-Pesa messages as records.</p></div></details>
       <details name="faq" data-c="move"><summary><span data-t="q6">How do transporters find loads?</span><i></i></summary><div class="ans"><p data-t="q6a">List your route, vehicle and capacity. Sellers along your route see you on the map, and Mkulima AI suggests you when someone needs transport.</p></div></details>
-      <details name="faq" data-c="acct"><summary><span data-t="q7">What is the blue badge?</span><i></i></summary><div class="ans"><p data-t="q7a">A one-time KSh 2,000 verification. Our team visits your farm, business or vehicle, and verified profiles show a blue badge. Paying alone never earns it.</p></div></details>
+      <details name="faq" data-c="acct"><summary><span data-t="q7">What is the blue badge?</span><i></i></summary><div class="ans"><p data-t="q7a">KSh 2,000 every 6 months, renewed after 6 months (not one-time). Our team visits your farm, business or vehicle, and verified profiles show a blue badge. You must renew it every 6 months, and paying alone never earns it.</p></div></details>
       <details name="faq" data-c="acct"><summary><span data-t="q3">Can I use it in Kiswahili?</span><i></i></summary><div class="ans"><p data-t="q3a">Yes. Switch language at the top of any page, and ask Mkulima AI in Kiswahili.</p></div></details>
       <details name="faq" data-c="acct"><summary><span data-t="q4">Is my location shared?</span><i></i></summary><div class="ans"><p data-t="q4a">Only an approximate area (about 1 km) is shown to others, never your exact farm or home.</p></div></details>
       <details name="faq" data-c="move"><summary><span data-t="q5">Does it work without internet?</span><i></i></summary><div class="ans"><p data-t="q5a">Install the app from your browser. Pages you have opened keep working offline, and new data loads when you reconnect.</p></div></details>

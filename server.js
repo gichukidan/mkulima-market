@@ -46,7 +46,8 @@ app.use(helmet({
       scriptSrc: ["'self'", 'https://unpkg.com'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'", 'data:', 'https://*.tile.openstreetmap.org', 'https://unpkg.com'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https://*.tile.openstreetmap.org', 'https://unpkg.com'],
+      mediaSrc: ["'self'", 'blob:', 'data:'],
       connectSrc: ["'self'", 'https://unpkg.com', 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
       upgradeInsecureRequests: IS_PROD ? [] : null
     }
@@ -56,7 +57,10 @@ app.use(helmet({
 // ---- Caching layer 1: compress every text response ----
 app.use(compression());
 
-app.use(express.json({ limit: '100kb' }));
+// Small bodies everywhere, except the routes that carry photos (listing images) or AI attachments (image / voice).
+const jsonSmall = express.json({ limit: '100kb' });
+const jsonLarge = express.json({ limit: '12mb' });
+app.use((req, res, next) => (/^\/api\/(ai\/?$|listings\/\d+\/images\/?$)/.test(req.path) ? jsonLarge : jsonSmall)(req, res, next));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 // ---- Caching layer 2: versioned static assets ----
@@ -235,6 +239,8 @@ function get(sql, params = []) {
 
 // Knowledge base (RAG source for Ask Mkulima AI)
 const kb = require('./lib/kb')({ run, get, all });
+// Photos, views and thumbs, follows, ratings, notifications, blue badge, adverts, quote requests, insights, map data, admin tools.
+const features = require('./lib/features')(app, { run, get, all, requireAuth, requireAdmin, publicLimiter, clearPublicCache, roundCoord, validLatLng });
 
 async function initDatabase() {
   await run(`
@@ -330,6 +336,7 @@ async function initDatabase() {
   await run('CREATE INDEX IF NOT EXISTS idx_routes_user ON routes(user_id)');
 
   await kb.init();
+  await features.init();
 }
 
 function haversineKm(a,b,c,d){
@@ -464,9 +471,18 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
-app.get('/api/session', (req, res) => {
-  if (!req.session.userId) return res.json({ user: null });
-  res.json({ user: req.session.user });
+app.get('/api/session', async (req, res) => {
+  try {
+    if (!req.session.userId) return res.json({ user: null, unread: 0 });
+    const u = await get('SELECT * FROM users WHERE id = ?', [req.session.userId]);
+    if (!u) return req.session.destroy(() => res.json({ user: null, unread: 0 }));
+    await features.badgeNotices(u);
+    const n = await get('SELECT COUNT(*) AS c FROM notifications WHERE user_id = ? AND is_read = 0', [u.id]);
+    res.json({ user: features.selfUser(u), unread: n.c });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to load session' });
+  }
 });
 
 app.get('/api/users/me', requireAuth, async (req, res) => {
@@ -490,10 +506,10 @@ app.get('/api/users/me', requireAuth, async (req, res) => {
       speciality: user.speciality,
       activeListings: listingCount.c,
       routes: routeCount.c,
-      // Orders, response rate and ratings are not tracked yet, so none are shown.
-      orders: 0,
-      responseRate: null,
-      rating: null
+      plan: features.planOf(user),
+      imageLimit: features.imageLimit(user),
+      badge: { active: features.badgeActive(user), until: user.badge_until || null },
+      rating: (await features.ratingOf(user.id)).avg
     });
   } catch (error) {
     console.error(error);
@@ -504,7 +520,14 @@ app.get('/api/users/me', requireAuth, async (req, res) => {
 app.get('/api/listings', requireAuth, async (req, res) => {
   try {
     const rows = await all(
-      `SELECT * FROM listings WHERE user_id = ? ORDER BY created_at DESC`,
+      `SELECT l.*,
+         (SELECT COUNT(*) FROM listing_views WHERE listing_id = l.id) AS views,
+         (SELECT COUNT(*) FROM listing_votes WHERE listing_id = l.id AND vote = 1) AS likes,
+         (SELECT COUNT(*) FROM listing_votes WHERE listing_id = l.id AND vote = -1) AS dislikes,
+         (SELECT id FROM listing_images WHERE listing_id = l.id ORDER BY position, id LIMIT 1) AS image_id,
+         (SELECT COUNT(*) FROM listing_images WHERE listing_id = l.id) AS image_count,
+         EXISTS(SELECT 1 FROM adverts a WHERE a.listing_id = l.id AND a.kind = 'sponsored' AND a.status = 'active' AND (a.ends_at IS NULL OR a.ends_at >= date('now'))) AS sponsored
+       FROM listings l WHERE l.user_id = ? ORDER BY l.created_at DESC`,
       [req.session.userId]
     );
     res.json(rows);
@@ -528,6 +551,7 @@ app.post('/api/listings', requireAuth, async (req, res) => {
     if (status && !['available', 'almost_out', 'paused', 'sold'].includes(status)) {
       return res.status(400).json({ error: 'Invalid listing status' });
     }
+    if (status === 'sold') return res.status(400).json({ error: 'A sold-out listing is removed automatically, so it cannot be posted.' });
     if (String(title).length > 120 || String(description || '').length > 2000) {
       return res.status(400).json({ error: 'Title or description is too long' });
     }
@@ -686,7 +710,7 @@ app.get('/api/admin/overview', requireAdmin, async (req, res) => {
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
   try {
     const { search, role } = parseFilters(req);
-    let sql = 'SELECT id, full_name, email, phone, role, location, business_type, created_at FROM users';
+    let sql = "SELECT id, full_name, email, phone, role, location, business_type, created_at, COALESCE(plan, 'free') AS plan, badge_until FROM users";
     const params = [];
     const conditions = [];
 
@@ -792,13 +816,17 @@ async function findNearbySellers(lat, lng, radiusKm) {
   });
 }
 
+// Kiswahili produce names, so "nyanya" finds "Tomatoes" and "Tomatoes (Nyanya)" finds both.
+const SW_NAMES = { nyanya: 'tomato', viazi: 'potato', vitunguu: 'onion', kitunguu: 'onion', sukuma: 'kale', mahindi: 'maize', maharagwe: 'bean', kabichi: 'cabbage', karoti: 'carrot', ndizi: 'banana', embe: 'mango', maembe: 'mango', parachichi: 'avocado', mchele: 'rice', samaki: 'fish', maziwa: 'milk', mayai: 'egg', kuku: 'chicken', mbuzi: 'goat', kondoo: 'sheep', ngombe: 'cattle', ndengu: 'green gram' };
+function swahiliToEnglish(t) { return SW_NAMES[t] || t; }
+
 // Public marketplace search: available listings only, no seller contact details.
 async function searchListings({ q = '', commodity = '', minQty = 0, maxPrice = 0, near = null, radiusKm = 0, limit = 30 }) {
   const key = `listings:${q}:${commodity}:${minQty}:${maxPrice}:${near ? roundCoord(near.lat) + ',' + roundCoord(near.lng) : ''}:${radiusKm}:${limit}`;
   return cached(key, 60 * 1000, async () => {
     const where = ["l.status IN ('available', 'almost_out')"];
     const params = [];
-    const term = String(q || commodity).trim().toLowerCase().replace(/e?s$/, '');
+    const term = swahiliToEnglish(String(q || commodity).trim().toLowerCase()).replace(/e?s$/, '');
     if (term) {
       where.push('(LOWER(l.commodity) LIKE ? OR LOWER(l.title) LIKE ?)');
       params.push(`%${term}%`, `%${term}%`);
@@ -807,10 +835,16 @@ async function searchListings({ q = '', commodity = '', minQty = 0, maxPrice = 0
     if (maxPrice > 0) { where.push('l.price_per_kg <= ?'); params.push(maxPrice); }
     const rows = await all(
       `SELECT l.id, l.title, l.commodity, l.grade, l.quantity_kg, l.price_per_kg, l.unit, l.location, l.status, l.created_at,
-              COALESCE(l.lat, u.lat) AS lat, COALESCE(l.lng, u.lng) AS lng, u.full_name AS seller_name, l.is_demo
+              COALESCE(l.lat, u.lat) AS lat, COALESCE(l.lng, u.lng) AS lng, u.full_name AS seller_name, l.is_demo,
+              u.id AS seller_id, u.badge_until,
+              (SELECT COUNT(*) FROM listing_views WHERE listing_id = l.id) AS views,
+              (SELECT COUNT(*) FROM listing_votes WHERE listing_id = l.id AND vote = 1) AS likes,
+              (SELECT COUNT(*) FROM listing_votes WHERE listing_id = l.id AND vote = -1) AS dislikes,
+              (SELECT id FROM listing_images WHERE listing_id = l.id ORDER BY position, id LIMIT 1) AS image_id,
+              EXISTS(SELECT 1 FROM adverts a WHERE a.listing_id = l.id AND a.kind = 'sponsored' AND a.status = 'active' AND (a.ends_at IS NULL OR a.ends_at >= date('now'))) AS sponsored
        FROM listings l JOIN users u ON u.id = l.user_id
        WHERE ${where.join(' AND ')}
-       ORDER BY l.created_at DESC LIMIT 200`,
+       ORDER BY sponsored DESC, l.created_at DESC LIMIT 200`,
       params
     );
     let out = rows.map((r) => {
@@ -827,8 +861,11 @@ async function searchListings({ q = '', commodity = '', minQty = 0, maxPrice = 0
         area: r.location || null,
         status: r.status,
         seller_name: r.seller_name,
+        seller_id: r.seller_id,
+        seller_verified: features.badgeActive(r),
         listed_on: r.created_at,
         is_demo: !!r.is_demo,
+        views: r.views, likes: r.likes, dislikes: r.dislikes, image_id: r.image_id, sponsored: !!r.sponsored,
         lat: roundCoord(r.lat),
         lng: roundCoord(r.lng),
         distance_km: d == null ? null : Math.round(d),
@@ -836,7 +873,7 @@ async function searchListings({ q = '', commodity = '', minQty = 0, maxPrice = 0
       };
     });
     if (near && radiusKm > 0) out = out.filter((r) => r.distance_km != null && r.distance_km <= radiusKm);
-    if (near) out.sort((a, b) => (a.distance_km ?? 1e9) - (b.distance_km ?? 1e9));
+    if (near) out.sort((a, b) => (b.sponsored - a.sponsored) || ((a.distance_km ?? 1e9) - (b.distance_km ?? 1e9)));
     return out.slice(0, Math.min(limit, 100));
   });
 }
@@ -984,10 +1021,13 @@ app.put('/api/admin/listings/:id/status', requireAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Invalid listing status' });
     }
 
-    const result = await run('UPDATE listings SET status = ? WHERE id = ?', [status, id]);
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Listing not found' });
+    const row = await get('SELECT * FROM listings WHERE id = ?', [id]);
+    if (!row) return res.status(404).json({ error: 'Listing not found' });
+    if (status === 'sold') {
+      await features.sellListing(row);
+      return res.json({ ok: true, message: 'Listing marked sold out and removed', status, deleted: true });
     }
+    await run('UPDATE listings SET status = ? WHERE id = ?', [status, id]);
 
     clearPublicCache();
     res.json({ ok: true, message: 'Listing status updated', status });
@@ -1035,7 +1075,7 @@ app.post('/api/admin/login', authLimiter, async (req, res) => {
 require('./lib/ai')(app, { aiLimiter, cached, searchListings, findNearbySellers, validLatLng, roundCoord, requireAuth, kb, GEMINI_API_KEY, GEMINI_MODEL });
 
 // ---- Full CRUD for listings, routes, profile/account, admin users; knowledge base CRUD ----
-require('./lib/crud')(app, { run, get, all, bcrypt, requireAuth, requireAdmin, publicLimiter, authLimiter, clearPublicCache, validLatLng, roundCoord });
+require('./lib/crud')(app, { run, get, all, bcrypt, requireAuth, requireAdmin, publicLimiter, authLimiter, clearPublicCache, validLatLng, roundCoord, features });
 kb.registerRoutes(app, { requireAdmin, publicLimiter });
 
 app.post('/api/admin/logout', (req, res) => {
@@ -1044,7 +1084,7 @@ app.post('/api/admin/logout', (req, res) => {
 
 // The admin page uses inline scripts, so it gets its own, looser policy. Never cached.
 function sendAdmin(req, res) {
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: data:; media-src 'self' blob: data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'");
   res.setHeader('Cache-Control', 'no-store');
   res.sendFile(path.join(__dirname, 'admin.html'));
 }

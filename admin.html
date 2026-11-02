@@ -3,786 +3,853 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
   <title>Mkulima Market Admin</title>
   <style>
-    .kb-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
-    .kb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .kb-form textarea, .kb-form input, .kb-form select, .role-select { width: 100%; font: inherit; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: inherit; }
-    .role-select { width: auto; padding: 6px 8px; }
-    .role-select option, .kb-form select option { color: #111; }
-    @media (max-width: 900px) { .kb-grid, .kb-row { grid-template-columns: 1fr; } }
     :root {
-      --bg: #071a17;
-      --bg-soft: #0d2a24;
-      --panel: #102d29;
-      --panel-strong: #163631;
-      --card: #1d403a;
-      --ink: #edf9f3;
-      --muted: #b8d7ca;
-      --line: rgba(255,255,255,0.08);
-      --green: #71f0b6;
-      --forest: #1ed084;
+      --bg: #04130f;
+      --bg2: #071f19;
+      --side: #061a15;
+      --panel: #0b2620;
+      --panel2: #0f302a;
+      --card: #12392f;
+      --field: #0a211c;
+      --ink: #eaf8f1;
+      --muted: #9cc3b3;
+      --line: rgba(160, 235, 205, 0.11);
+      --line2: rgba(160, 235, 205, 0.22);
+      --emerald: #10b981;
+      --emerald2: #34d399;
+      --mint: #8af0c4;
+      --teal: #2dd4bf;
+      --teal-d: #0f766e;
+      --lime: #bef264;
       --blue: #7ec5ff;
-      --amber: #ffc76a;
-      --red: #ff7a7a;
-      --shadow: rgba(0,0,0,0.28);
+      --amber: #fbbf24;
+      --red: #ff8080;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --r: 14px;
     }
-
     * { box-sizing: border-box; }
-
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-soft) 100%);
+      margin: 0; min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px; line-height: 1.45;
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(16,185,129,0.12), transparent 60%), linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%) fixed;
       color: var(--ink);
     }
-
-    .wrap {
-      max-width: 1460px;
-      margin: 0 auto;
-      padding: 26px 20px 56px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .title {
-      font-size: clamp(1.8rem, 2vw, 2.8rem);
-      font-weight: 900;
-      letter-spacing: -0.06em;
-      color: var(--green);
-    }
-
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .button {
-      border: none;
-      border-radius: 12px;
-      padding: 11px 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 120ms ease;
-    }
-
-    .button:hover { transform: translateY(-1px); }
-
-    .button.primary {
-      background: linear-gradient(135deg, var(--forest), var(--green));
-      color: #071a17;
-    }
-
-    .button.secondary {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-      color: var(--ink);
-    }
-
-    .button.danger {
-      background: rgba(255,122,122,0.12);
-      border: 1px solid rgba(255,122,122,0.35);
-      color: var(--red);
-    }
-
-    .login-panel {
-      display: none;
-      max-width: 520px;
-      margin: 70px auto 0;
-      background: rgba(16,45,41,0.94);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 24px 44px var(--shadow);
-    }
-
-    .login-panel h2 {
-      margin: 0 0 8px;
-      font-size: 2rem;
-      letter-spacing: -0.05em;
-    }
-
-    .login-panel p {
-      margin: 0 0 22px;
-      color: var(--muted);
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-      font-weight: 600;
-      color: var(--muted);
-    }
-
-    .field input,
-    .field select,
-    .toolbar input,
-    .toolbar select {
-      width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 11px 12px;
-      color: var(--ink);
-      font-size: 15px;
-    }
-
-    .dashboard {
-      display: none;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 26px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, var(--panel-strong), rgba(22,54,49,0.92));
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-    }
-
-    .card .label {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .card .value {
-      font-size: clamp(1.8rem, 2vw, 2.7rem);
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      color: var(--green);
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 18px;
-      padding: 16px;
-      background: rgba(16,45,41,0.8);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-    }
-
-    .toolbar > div {
-      min-width: 180px;
-      flex: 1 1 180px;
-    }
-
-    .toolbar label {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 22px;
-      margin-top: 18px;
-    }
-
-    .panel {
-      background: rgba(16,45,41,0.9);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-    }
-
-    .panel h3 {
-      margin: 0;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,0.02);
-      font-size: 1.2rem;
-    }
-
-    .panel-body {
-      padding: 18px 20px 22px;
-    }
-
-    .mini-chart {
-      width: 100%;
-      height: 220px;
-      display: flex;
-      align-items: end;
-      gap: 10px;
-      padding-top: 10px;
-    }
-
-    .bar {
-      flex: 1;
-      border-radius: 12px 12px 0 0;
-      background: linear-gradient(180deg, var(--green), var(--blue));
-      position: relative;
-      min-height: 20px;
-    }
-
-    .bar::after {
-      content: attr(data-label);
-      position: absolute;
-      bottom: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-    }
-
-    th {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 800;
-    }
-
-    .badge {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 800;
-      background: rgba(113,240,182,0.14);
-      color: var(--green);
-    }
-
-    .status-chip {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: capitalize;
-      background: rgba(255,199,106,0.14);
-      color: var(--amber);
-    }
-
-    .status-chip.sold { background: rgba(255,122,122,0.14); color: var(--red); }
-    .status-chip.available { background: rgba(113,240,182,0.14); color: var(--green); }
-    .status-chip.paused { background: rgba(126,197,255,0.12); color: var(--blue); }
-    .status-chip.almost_out { background: rgba(255,199,106,0.14); color: var(--amber); }
-
-    .muted { color: var(--muted); }
-    .danger { color: var(--red); }
-    .small { font-size: 12px; }
-
-    .inline {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    button, input, select, textarea { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
     .hidden { display: none !important; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12.5px; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-    @media (max-width: 980px) {
-      .stats { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
-      .grid { grid-template-columns: 1fr; }
+    /* ---------- buttons and fields ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 40px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line2);
+      background: rgba(255,255,255,0.04); color: var(--ink); font-weight: 700; font-size: 14px; cursor: pointer;
+      transition: background 140ms, border-color 140ms, transform 120ms, box-shadow 140ms;
     }
+    .btn:hover:not(:disabled) { background: rgba(138,240,196,0.1); border-color: var(--emerald2); transform: translateY(-1px); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn.primary { background: linear-gradient(135deg, var(--teal-d), var(--emerald) 60%, var(--emerald2)); border-color: transparent; color: #03140f; }
+    .btn.primary:hover:not(:disabled) { background: linear-gradient(135deg, #14998c, var(--emerald2)); box-shadow: 0 6px 18px rgba(16,185,129,0.3); }
+    .btn.danger { background: rgba(255,128,128,0.1); border-color: rgba(255,128,128,0.38); color: var(--red); }
+    .btn.danger:hover:not(:disabled) { background: rgba(255,128,128,0.2); border-color: var(--red); }
+    .btn.armed { background: var(--red); border-color: var(--red); color: #2b0606; }
+    .btn.armed:hover:not(:disabled) { background: #ff9d9d; }
+    .btn.ok { background: rgba(52,211,153,0.14); border-color: rgba(52,211,153,0.5); color: var(--mint); }
+    .btn.ok.armed { background: var(--emerald2); border-color: var(--emerald2); color: #03140f; }
+    .btn.sm { min-height: 34px; padding: 5px 10px; font-size: 13px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .field > label, .flabel { font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+    input[type=text], input[type=email], input[type=password], input[type=search], input[type=number], select, textarea {
+      width: 100%; min-height: 40px; padding: 8px 11px; border-radius: 10px; border: 1px solid var(--line2); background: var(--field); color: var(--ink);
+      transition: border-color 140ms, box-shadow 140ms;
+    }
+    input:hover, select:hover, textarea:hover { border-color: rgba(138,240,196,0.4); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--emerald2); box-shadow: 0 0 0 3px rgba(52,211,153,0.22); }
+    select option { background: #0b2620; color: var(--ink); }
+    input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--emerald); }
+    .inline-sel { width: auto; min-height: 34px; padding: 4px 8px; font-size: 13px; }
+    .note-in { min-height: 34px; padding: 5px 9px; font-size: 13px; }
 
-    @media (max-width: 560px) {
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .stats { grid-template-columns: 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .toolbar > div { width: 100%; }
+    /* ---------- login ---------- */
+    .login { max-width: 440px; margin: 9vh auto 0; padding: 30px 28px; border-radius: 22px; background: linear-gradient(180deg, var(--panel2), var(--panel)); border: 1px solid var(--line2); box-shadow: 0 30px 60px var(--shadow); }
+    .login h1 { margin: 0 0 6px; font-size: 1.9rem; letter-spacing: -0.04em; color: var(--mint); }
+    .login p { margin: 0 0 20px; color: var(--muted); }
+    .login .msg { color: var(--red); min-height: 22px; margin: 8px 0 0; font-weight: 600; }
+
+    /* ---------- layout ---------- */
+    .app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+    .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px 14px; background: linear-gradient(180deg, var(--side), #04140f); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 18px; font-weight: 900; letter-spacing: -0.03em; font-size: 1.15rem; color: var(--mint); }
+    .brand i { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--teal), var(--emerald)); display: grid; place-items: center; color: #03140f; font-style: normal; font-size: 16px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 11px; width: 100%; min-height: 44px; padding: 8px 12px; border-radius: 11px; border: 1px solid transparent;
+      background: transparent; color: var(--muted); font-weight: 650; text-align: left; cursor: pointer; transition: background 140ms, color 140ms;
     }
+    .nav-btn svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn:hover { background: rgba(138,240,196,0.08); color: var(--ink); }
+    .nav-btn[aria-current=page] { background: linear-gradient(90deg, rgba(16,185,129,0.24), rgba(45,212,191,0.1)); border-color: rgba(52,211,153,0.4); color: var(--mint); }
+    .count { margin-left: auto; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--amber); color: #2b1b00; font-size: 12px; font-weight: 800; text-align: center; }
+    .side-foot { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+    .main { padding: 24px 28px 70px; min-width: 0; }
+    .head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+    .head h2 { margin: 0; font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: -0.04em; }
+    .head p { margin: 2px 0 0; color: var(--muted); }
+    .head-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .searchbox { width: min(280px, 100%); }
+    .menu-btn { display: none; }
+
+    .panel { background: linear-gradient(180deg, var(--panel2), var(--panel)); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 10px 28px rgba(0,0,0,0.22); margin-bottom: 20px; overflow: hidden; }
+    .panel > h3 { margin: 0; padding: 14px 18px; font-size: 1rem; border-bottom: 1px solid var(--line); background: linear-gradient(90deg, rgba(45,212,191,0.08), transparent); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .panel > h3 .grow { flex: 1; }
+    .pbody { padding: 16px 18px; }
+    .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .toolbar .field { margin: 0; min-width: 150px; flex: 1 1 150px; }
+    .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+    .seg button { min-height: 36px; padding: 5px 13px; border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--muted); font-weight: 700; font-size: 13px; cursor: pointer; transition: background 140ms, color 140ms; }
+    .seg button:hover { background: rgba(138,240,196,0.1); color: var(--ink); }
+    .seg button[aria-pressed=true] { background: var(--emerald); border-color: var(--emerald); color: #03140f; }
+
+    /* ---------- overview ---------- */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .stat { position: relative; padding: 16px 18px; border-radius: var(--r); border: 1px solid var(--line); background: linear-gradient(160deg, var(--card), var(--panel)); overflow: hidden; }
+    .stat::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--c, var(--emerald)); }
+    .stat .k { font-size: 11.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+    .stat .v { font-size: 2rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1.15; margin-top: 4px; color: var(--c, var(--mint)); }
+    .stat .v small { font-size: 1rem; color: var(--muted); font-weight: 700; }
+    .stat .s { margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+    .grid2 { align-items: start; display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
+    .chart { width: 100%; height: auto; display: block; }
+    .chart text { fill: var(--muted); font-size: 11px; font-family: inherit; }
+    .chart .val { fill: var(--ink); font-weight: 700; }
+    .chart rect.b { fill: url(#barg); }
+    .chart rect.b:hover { fill: var(--lime); }
+    .dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 0; }
+    .dl dt, .dl dd { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .dl dd { text-align: right; font-weight: 800; color: var(--mint); font-variant-numeric: tabular-nums; }
+    .live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--mint); font-weight: 700; }
+    .live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--emerald2); box-shadow: 0 0 0 4px rgba(52,211,153,0.2); }
+
+    /* ---------- tables ---------- */
+    .tw { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 800; white-space: nowrap; background: rgba(0,0,0,0.12); }
+    tbody tr:hover { background: rgba(138,240,196,0.045); }
+    td .sub { display: block; color: var(--muted); font-size: 12.5px; word-break: break-word; }
+    td strong { font-weight: 700; }
+    .wrap-text { overflow-wrap: anywhere; }
+    .acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .empty { padding: 30px 18px; text-align: center; color: var(--muted); }
+    .loading { padding: 26px 18px; text-align: center; color: var(--muted); }
+    .loading::before { content: ''; display: inline-block; width: 16px; height: 16px; margin-right: 9px; vertical-align: -3px; border-radius: 50%; border: 2px solid var(--line2); border-top-color: var(--emerald2); animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+    .chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 800; text-transform: capitalize; background: rgba(251,191,36,0.14); color: var(--amber); white-space: nowrap; }
+    .chip.good, .chip.available, .chip.verified, .chip.active, .chip.seller { background: rgba(52,211,153,0.16); color: var(--mint); }
+    .chip.bad, .chip.rejected, .chip.sold { background: rgba(255,128,128,0.14); color: var(--red); }
+    .chip.info, .chip.paused, .chip.ended, .chip.transporter { background: rgba(126,197,255,0.13); color: var(--blue); }
+    .chip.teal, .chip.buyer { background: rgba(45,212,191,0.14); color: var(--teal); }
+
+    .kb-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: start; }
+    .kb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .item-note { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
+
+    /* ---------- toast ---------- */
+    #toasts { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: grid; gap: 8px; width: min(380px, calc(100vw - 32px)); }
+    .toast { padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(52,211,153,0.5); background: #0d3a2d; box-shadow: 0 12px 30px var(--shadow); font-weight: 600; display: flex; gap: 10px; align-items: flex-start; }
+    .toast.err { border-color: rgba(255,128,128,0.6); background: #3a1313; color: #ffd6d6; }
+    .toast button { margin-left: auto; background: none; border: 0; color: inherit; cursor: pointer; font-size: 18px; line-height: 1; min-width: 28px; min-height: 28px; }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 1100px) { .grid2, .kb-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .side { position: fixed; z-index: 40; inset: 0 auto 0 0; width: 270px; max-width: 86vw; transform: translateX(-102%); transition: transform 200ms; box-shadow: 10px 0 40px var(--shadow); }
+      .side.open { transform: none; }
+      .menu-btn { display: inline-flex; }
+      .main { padding: 16px 16px 70px; }
+      .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 35; }
+    }
+    @media (max-width: 700px) {
+      .stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      .stack, .stack tbody, .stack tr, .stack td { display: block; width: 100%; }
+      .stack tr { padding: 10px 14px; border-bottom: 1px solid var(--line2); }
+      .stack td { border: 0; padding: 4px 0; display: grid; grid-template-columns: 96px 1fr; gap: 8px; }
+      .stack td::before { content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 3px; }
+      .stack td.nolabel { display: block; }
+      .stack td.nolabel::before { content: none; }
+      .kb-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) { .cards { grid-template-columns: 1fr 1fr; gap: 10px; } .stat { padding: 12px 12px 12px 14px; } .stat .v { font-size: 1.55rem; } }
   </style>
 </head>
 <body>
-  <div id="loginView" class="login-panel">
-    <h2>Admin login</h2>
-    <p>Restricted dashboard for internal platform operations.</p>
-    <div class="field">
-      <label for="adminEmail">Email</label>
-      <input id="adminEmail" type="email" placeholder="admin@mkulima.test">
-    </div>
-    <div class="field">
-      <label for="adminPassword">Password</label>
-      <input id="adminPassword" type="password" placeholder="Enter admin password">
-    </div>
-    <button class="button primary" onclick="loginAdmin()">Login</button>
-  </div>
+  <div id="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
 
-  <div id="dashboardView" class="wrap dashboard">
-    <div class="topbar">
-      <div class="title">Mkulima Market Admin</div>
-      <div class="actions">
-        <button class="button secondary" onclick="loadOverview()">Refresh</button>
-        <button class="button secondary" onclick="logoutAdmin()">Logout</button>
-      </div>
-    </div>
+  <main id="loginView" class="login hidden">
+    <h1>Admin login</h1>
+    <p>Restricted dashboard for internal Mkulima Market operations.</p>
+    <form id="loginForm" novalidate>
+      <div class="field"><label for="adminEmail">Email</label><input id="adminEmail" name="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="adminPassword">Password</label><input id="adminPassword" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn primary" type="submit" id="loginBtn">Sign in</button>
+      <p class="msg" id="loginMsg" role="alert"></p>
+    </form>
+  </main>
 
-    <div class="stats" id="stats"></div>
+  <div id="dashboardView" class="app hidden">
+    <aside class="side" id="side" aria-label="Admin navigation">
+      <div class="brand"><i aria-hidden="true">M</i> Mkulima Admin</div>
+      <nav id="nav" aria-label="Sections"></nav>
+      <div class="side-foot">
+        <span class="small muted" id="adminWho"></span>
+        <button class="btn" id="logoutBtn" type="button">Log out</button>
+      </div>
+    </aside>
+    <div class="scrim hidden" id="scrim"></div>
 
-    <div class="toolbar">
-      <div>
-        <label>Search</label>
-        <input id="globalSearch" type="search" placeholder="Search users, listings, routes...">
-      </div>
-      <div>
-        <label>Role</label>
-        <select id="roleFilter">
-          <option value="">All roles</option>
-          <option value="buyer">Buyer</option>
-          <option value="seller">Seller</option>
-          <option value="transporter">Transporter</option>
-        </select>
-      </div>
-      <div>
-        <label>Listing status</label>
-        <select id="statusFilter">
-          <option value="">All statuses</option>
-          <option value="available">Available</option>
-          <option value="almost_out">Almost out</option>
-          <option value="paused">Paused</option>
-          <option value="sold">Sold</option>
-        </select>
-      </div>
-      <div>
-        <label>Quick actions</label>
-        <button class="button primary" style="width:100%;" onclick="applyFilters()">Apply filters</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="panel">
-        <h3>Users</h3>
-        <div class="panel-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>Joined</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="userTable"></tbody>
-          </table>
+    <div class="main">
+      <div class="head">
+        <div style="display:flex;gap:10px;align-items:center;min-width:0">
+          <button class="btn menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false">&#9776;</button>
+          <div><h2 id="secTitle">Overview</h2><p id="secDesc"></p></div>
+        </div>
+        <div class="head-actions">
+          <label class="sr" for="globalSearch">Search</label>
+          <input id="globalSearch" class="searchbox hidden" type="search" placeholder="Search..." autocomplete="off">
         </div>
       </div>
 
-      <div class="panel">
-        <h3>Platform snapshot</h3>
-        <div class="panel-body">
-          <div class="mini-chart" id="chartBars"></div>
-          <div id="summaryBox" class="small muted" style="margin-top: 28px;"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid" style="margin-top: 24px;">
-      <div class="panel">
-        <h3>Listings</h3>
-        <div class="panel-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Commodity</th>
-                <th>Seller</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="listingTable"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h3>Routes</h3>
-        <div class="panel-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Route</th>
-                <th>From → To</th>
-                <th>Rate</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="routeTable"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" style="margin-top: 24px;" id="kbPanel">
-      <h3>Knowledge base (used by Ask Mkulima AI)</h3>
-      <div class="panel-body">
-        <p class="small muted">Ask Mkulima AI searches these articles before giving advice and names the article it used. Keep them accurate. Unpublished articles are hidden from the AI.</p>
-        <div class="kb-grid">
-          <div>
-            <table>
-              <thead><tr><th>Title</th><th>Lang</th><th>Category</th><th>Published</th><th>Action</th></tr></thead>
-              <tbody id="kbTable"></tbody>
-            </table>
+      <!-- Overview -->
+      <section id="sec-overview" data-sec="overview" aria-labelledby="secTitle">
+        <div id="statCards" class="cards"></div>
+        <div class="grid2">
+          <div class="panel"><h3>New sign-ups, last 14 days</h3><div class="pbody" id="signups"></div></div>
+          <div class="panel">
+            <h3><span class="grow">Database</span><span class="live" id="dbLive">live</span></h3>
+            <div class="pbody">
+              <dl class="dl" id="dbList"></dl>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap">
+                <button class="btn primary sm" type="button" id="refreshBtn">Refresh</button>
+                <span class="small muted" id="lastRefresh" aria-live="polite">Not loaded yet</span>
+              </div>
+            </div>
           </div>
-          <form id="kbForm" class="kb-form" onsubmit="saveKb(event)">
-            <input type="hidden" id="kbId">
-            <div class="field"><label for="kbTitle">Title</label><input id="kbTitle" required maxlength="160"></div>
-            <div class="kb-row">
-              <div class="field"><label for="kbLang">Language</label><select id="kbLang"><option value="en">English</option><option value="sw">Kiswahili</option></select></div>
-              <div class="field"><label for="kbCategory">Category</label><input id="kbCategory" maxlength="200" placeholder="selling, safety, post-harvest"></div>
-            </div>
-            <div class="field"><label for="kbTags">Search tags</label><input id="kbTags" maxlength="200" placeholder="extra words people may search for"></div>
-            <div class="field"><label for="kbSource">Source</label><input id="kbSource" maxlength="200" placeholder="Who wrote or verified this"></div>
-            <div class="field"><label for="kbBody">Body</label><textarea id="kbBody" rows="10" required></textarea></div>
-            <label class="small"><input type="checkbox" id="kbPublished" checked> Published</label>
-            <div class="inline" style="margin-top:12px">
-              <button class="button primary" type="submit" id="kbSave">Create article</button>
-              <button class="button secondary" type="button" onclick="resetKb()">New / clear</button>
-            </div>
-            <p class="small" id="kbMsg"></p>
-          </form>
         </div>
-      </div>
+      </section>
+
+      <!-- Users -->
+      <section id="sec-users" data-sec="users" class="hidden" aria-labelledby="secTitle">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="field"><label for="roleFilter">Role</label>
+              <select id="roleFilter"><option value="">All roles</option><option value="buyer">Buyer</option><option value="seller">Seller</option><option value="transporter">Transporter</option></select></div>
+            <span class="small muted" id="userCount" aria-live="polite"></span>
+          </div>
+          <div id="usersBox"></div>
+        </div>
+        <p class="small muted">Photo limit per listing follows the plan: free 5, biashara 15, agribusiness 30. There is no online payment yet, so plans are set here. A badge grant or verification adds 6 months (an active badge is extended from its current end date).</p>
+      </section>
+
+      <!-- Badges -->
+      <section id="sec-badges" data-sec="badges" class="hidden" aria-labelledby="secTitle">
+        <div class="panel">
+          <div class="toolbar">
+            <div><span class="flabel" id="bfLabel">Status</span>
+              <div class="seg" id="badgeSeg" role="group" aria-labelledby="bfLabel"></div></div>
+          </div>
+          <div class="pbody small muted" style="padding-bottom:0">Verify only after the in-person visit is done and the KSh payment is confirmed. Verifying grants 6 months; a renewal is added on top of the old end date, so nothing is lost.</div>
+          <div id="badgesBox"></div>
+        </div>
+      </section>
+
+      <!-- Adverts -->
+      <section id="sec-adverts" data-sec="adverts" class="hidden" aria-labelledby="secTitle">
+        <div class="panel">
+          <div class="toolbar">
+            <div><span class="flabel" id="afLabel">Status</span>
+              <div class="seg" id="advertSeg" role="group" aria-labelledby="afLabel"></div></div>
+          </div>
+          <div id="advertsBox"></div>
+        </div>
+      </section>
+
+      <!-- Listings -->
+      <section id="sec-listings" data-sec="listings" class="hidden" aria-labelledby="secTitle">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="field"><label for="statusFilter">Listing status</label>
+              <select id="statusFilter"><option value="">All statuses</option><option value="available">Available</option><option value="almost_out">Almost out</option><option value="paused">Paused</option></select></div>
+            <span class="small muted" id="listingCount" aria-live="polite"></span>
+          </div>
+          <div id="listingsBox"></div>
+        </div>
+        <p class="small muted">Marking a listing sold removes it from the marketplace permanently (it is counted in the seller's sold total).</p>
+      </section>
+
+      <!-- Routes -->
+      <section id="sec-routes" data-sec="routes" class="hidden" aria-labelledby="secTitle">
+        <div class="panel"><div class="toolbar"><span class="small muted" id="routeCount" aria-live="polite"></span></div><div id="routesBox"></div></div>
+      </section>
+
+      <!-- Ratings -->
+      <section id="sec-ratings" data-sec="ratings" class="hidden" aria-labelledby="secTitle">
+        <div class="panel"><div class="toolbar"><span class="small muted" id="ratingCount" aria-live="polite"></span></div><div id="ratingsBox"></div></div>
+      </section>
+
+      <!-- Knowledge base -->
+      <section id="sec-kb" data-sec="kb" class="hidden" aria-labelledby="secTitle">
+        <div class="panel">
+          <div class="pbody">
+            <p class="small muted" style="margin-top:0">Ask Mkulima AI searches these articles before giving advice and names the article it used. Keep them accurate. Unpublished articles are hidden from the AI.</p>
+            <div class="kb-grid">
+              <div class="tw" id="kbBox"></div>
+              <form id="kbForm" novalidate>
+                <input type="hidden" id="kbId">
+                <div class="field"><label for="kbTitle">Title</label><input id="kbTitle" type="text" required maxlength="160"></div>
+                <div class="kb-row">
+                  <div class="field"><label for="kbLang">Language</label><select id="kbLang"><option value="en">English</option><option value="sw">Kiswahili</option></select></div>
+                  <div class="field"><label for="kbCategory">Category</label><input id="kbCategory" type="text" maxlength="200" placeholder="selling, safety, post-harvest"></div>
+                </div>
+                <div class="field"><label for="kbTags">Search tags</label><input id="kbTags" type="text" maxlength="200" placeholder="extra words people may search for"></div>
+                <div class="field"><label for="kbSource">Source</label><input id="kbSource" type="text" maxlength="200" placeholder="Who wrote or verified this"></div>
+                <div class="field"><label for="kbBody">Body</label><textarea id="kbBody" rows="10" required></textarea></div>
+                <label class="small" style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><input type="checkbox" id="kbPublished" checked> Published</label>
+                <div class="acts">
+                  <button class="btn primary" type="submit" id="kbSave">Create article</button>
+                  <button class="btn" type="button" id="kbReset">New / clear</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
-  <script>
-    const state = {
-      lastOverview: null
-    };
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const state = { sec: 'overview', stats: null, users: [], listings: [], routes: [], ratings: [], badges: [], adverts: [], kb: [], badgeFilter: 'pending', advertFilter: 'pending', loaded: {}, pending: { badges: 0, adverts: 0 }, armed: null };
 
-    function showLogin() {
-      document.getElementById('loginView').style.display = 'block';
-      document.getElementById('dashboardView').style.display = 'none';
-    }
+  const SECTIONS = [
+    { id: 'overview', label: 'Overview', desc: 'Live numbers straight from the database.', icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h5v-6h4v6h5V10"/>' },
+    { id: 'users', label: 'Users', desc: 'Roles, plans, badges and accounts.', icon: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2.2.6 3.5 2.5 3.5 6"/>', search: true },
+    { id: 'badges', label: 'Blue badges', desc: 'Verification requests: visit done and payment confirmed.', icon: '<path d="M12 2.5 14.6 5l3.6-.2.6 3.5 3 2L20 13.5l.8 3.5-3.4 1.2L15.5 21 12 19.5 8.5 21l-1.9-3.8L3.2 16l.8-3.5L2 10.3l3-2 .6-3.5L9.4 5z"/><path d="m8.5 12 2.4 2.4 4.6-4.8"/>', badge: 'badges' },
+    { id: 'adverts', label: 'Adverts', desc: 'Adverts and sponsored listings.', icon: '<path d="M3 11v3a1 1 0 0 0 1 1h3l8 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M19 9a4 4 0 0 1 0 6"/>', badge: 'adverts' },
+    { id: 'listings', label: 'Listings', desc: 'Everything sellers have listed.', icon: '<path d="M4 7h16l-1.5 12h-13z"/><path d="M8 7a4 4 0 0 1 8 0"/>', search: true },
+    { id: 'routes', label: 'Routes', desc: 'Transporter routes.', icon: '<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H14a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h5.5"/>', search: true },
+    { id: 'ratings', label: 'Ratings', desc: 'Moderate user ratings and comments.', icon: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>' },
+    { id: 'kb', label: 'Knowledge base', desc: 'Articles used by Ask Mkulima AI.', icon: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/>' }
+  ];
 
-    function showDashboard() {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('dashboardView').style.display = 'block';
-    }
+  /* ---------- helpers ---------- */
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"'`]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c])); }
+  function num(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
+  function fmtN(v) { return num(v).toLocaleString('en-US'); }
+  function parseDate(s) {
+    if (!s) return null;
+    const str = String(s);
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(str) ? new Date(str + 'T00:00:00') : new Date(str.replace(' ', 'T') + (/[zZ]|[+-]\d{2}:?\d{2}$/.test(str) ? '' : 'Z'));
+    return isNaN(d) ? null : d;
+  }
+  function fmtDate(s) { const d = parseDate(s); return d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'; }
+  function fmtDateTime(s) { const d = parseDate(s); return d ? d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'; }
+  function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function badgeInfo(until) {
+    if (!until) return { on: false, text: 'No badge' };
+    return String(until) >= todayStr() ? { on: true, text: 'Active until ' + fmtDate(until) } : { on: false, text: 'Expired ' + fmtDate(until) };
+  }
+  function chip(text, cls) { return '<span class="chip ' + esc(cls || '') + '">' + esc(String(text).replace(/_/g, ' ')) + '</span>'; }
+  function cell(label, html, cls) { return '<td data-label="' + esc(label) + '"' + (cls ? ' class="' + cls + '"' : '') + '><div class="cv">' + html + '</div></td>'; }
 
-    function applyFilters() {
-      const search = document.getElementById('globalSearch').value.trim();
-      const role = document.getElementById('roleFilter').value;
-      const status = document.getElementById('statusFilter').value;
-      loadOverview({ search, role, status });
-    }
+  function toast(msg, isErr) {
+    const box = $('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast' + (isErr ? ' err' : '');
+    if (isErr) el.setAttribute('role', 'alert');
+    const t = document.createElement('span'); t.textContent = msg;
+    const x = document.createElement('button'); x.type = 'button'; x.setAttribute('aria-label', 'Dismiss'); x.textContent = '×';
+    x.addEventListener('click', () => el.remove());
+    el.append(t, x); box.appendChild(el);
+    setTimeout(() => el.remove(), isErr ? 8000 : 4500);
+    while (box.children.length > 4) box.firstChild.remove();
+  }
 
-    async function loginAdmin() {
-      const email = document.getElementById('adminEmail').value.trim();
-      const password = document.getElementById('adminPassword').value;
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ email, password })
-      });
+  async function api(method, url, body) {
+    const opts = { method, credentials: 'same-origin', headers: {} };
+    if (body !== undefined) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    let res;
+    try { res = await fetch(url, opts); } catch (e) { throw new Error('Network error. Check your connection and try again.'); }
+    let data = null;
+    try { data = await res.json(); } catch (e) { data = null; }
+    if (res.status === 401) { showLogin('Your session ended. Please sign in again.'); throw new Error('Not signed in'); }
+    if (!res.ok) { const err = new Error((data && data.error) || ('Request failed (' + res.status + ')')); err.status = res.status; throw err; }
+    return data;
+  }
+  function qs(o) { const p = new URLSearchParams(); Object.keys(o).forEach((k) => { if (o[k]) p.set(k, o[k]); }); const s = p.toString(); return s ? '?' + s : ''; }
+
+  function setBox(id, html) { $(id).innerHTML = html; }
+  function loadingBox(id) { setBox(id, '<div class="loading" role="status">Loading...</div>'); }
+  function errorBox(id, e, retry) { setBox(id, '<div class="empty"><p style="color:var(--red);font-weight:700;margin:0 0 10px">' + esc(e.message) + '</p><button class="btn sm" type="button" data-act="retry" data-retry="' + esc(retry) + '">Try again</button></div>'); }
+
+  /* ---------- login / session ---------- */
+  function showLogin(msg) {
+    $('loginView').classList.remove('hidden'); $('dashboardView').classList.add('hidden');
+    $('loginMsg').textContent = msg || '';
+    state.loaded = {};
+  }
+  function showDashboard() { $('loginView').classList.add('hidden'); $('dashboardView').classList.remove('hidden'); }
+
+  $('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('adminEmail').value.trim(), password = $('adminPassword').value;
+    if (!email || !password) { $('loginMsg').textContent = 'Enter your email and password.'; return; }
+    const btn = $('loginBtn'); btn.disabled = true; btn.textContent = 'Signing in...'; $('loginMsg').textContent = '';
+    try {
+      const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ email, password }) });
+      let data = {}; try { data = await res.json(); } catch (x) { /* ignore */ }
+      if (!res.ok) { $('loginMsg').textContent = data.error || 'Login failed'; return; }
+      $('adminPassword').value = '';
+      enter(data.email || email);
+    } catch (err) { $('loginMsg').textContent = 'Network error. Try again.'; }
+    finally { btn.disabled = false; btn.textContent = 'Sign in'; }
+  });
+  $('logoutBtn').addEventListener('click', async () => {
+    try { await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) { /* ignore */ }
+    showLogin('You are signed out.');
+  });
+
+  function enter(email) {
+    showDashboard();
+    $('adminWho').textContent = email ? 'Signed in as ' + email : '';
+    state.loaded = {};
+    buildNav();
+    refreshCounts();
+    go(sectionFromHash() || 'overview', true);
+  }
+
+  async function checkSession() {
+    try {
+      const res = await fetch('/api/admin/session', { credentials: 'same-origin' });
       const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || 'Login failed');
-        return;
-      }
-      showDashboard();
-      loadOverview();
+      if (data.isAdmin) enter(data.email); else showLogin('');
+    } catch (e) { showLogin('Could not reach the server.'); }
+  }
+
+  /* ---------- navigation ---------- */
+  function sectionFromHash() { const h = location.hash.replace('#', ''); return SECTIONS.some((s) => s.id === h) ? h : null; }
+  function buildNav() {
+    $('nav').innerHTML = SECTIONS.map((s) => '<button class="nav-btn" type="button" data-sec="' + s.id + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + s.icon + '</svg><span>' + esc(s.label) + '</span>' +
+      (s.badge ? '<span class="count hidden" id="cnt-' + s.badge + '"></span>' : '') + '</button>').join('');
+    updateCounts();
+  }
+  function updateCounts() {
+    ['badges', 'adverts'].forEach((k) => {
+      const el = $('cnt-' + k); if (!el) return;
+      const n = state.pending[k];
+      el.textContent = n; el.classList.toggle('hidden', !n);
+      el.setAttribute('aria-label', n + ' pending');
+    });
+  }
+  async function refreshCounts() {
+    try {
+      const s = await api('GET', '/api/admin/stats');
+      state.stats = s; state.pending.badges = num(s.badgesPending); state.pending.adverts = num(s.advertsPending);
+      updateCounts();
+      if (state.sec === 'overview') renderOverview();
+    } catch (e) { /* surfaced where it matters */ }
+  }
+  $('nav').addEventListener('click', (e) => { const b = e.target.closest('[data-sec]'); if (b) { go(b.dataset.sec); closeMenu(); } });
+  window.addEventListener('hashchange', () => { const s = sectionFromHash(); if (s && s !== state.sec && !$('dashboardView').classList.contains('hidden')) go(s); });
+
+  function go(id, force) {
+    const sec = SECTIONS.find((s) => s.id === id) || SECTIONS[0];
+    state.sec = sec.id;
+    document.querySelectorAll('[data-sec].nav-btn').forEach((b) => { if (b.dataset.sec === sec.id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    document.querySelectorAll('section[data-sec]').forEach((s) => s.classList.toggle('hidden', s.dataset.sec !== sec.id));
+    $('secTitle').textContent = sec.label; $('secDesc').textContent = sec.desc;
+    document.title = sec.label + ' | Mkulima Market Admin';
+    $('globalSearch').classList.toggle('hidden', !sec.search);
+    if (sec.search) $('globalSearch').placeholder = 'Search ' + sec.label.toLowerCase() + '...';
+    if (location.hash !== '#' + sec.id) history.replaceState(null, '', '#' + sec.id);
+    if (force || !state.loaded[sec.id]) loadSection(sec.id);
+    else if (sec.id === 'overview') renderOverview();
+  }
+  function loadSection(id) {
+    state.loaded[id] = true;
+    ({ overview: loadOverview, users: loadUsers, badges: loadBadges, adverts: loadAdverts, listings: loadListings, routes: loadRoutes, ratings: loadRatings, kb: loadKb }[id])();
+  }
+  function reload(id) { return ({ overview: loadOverview, users: loadUsers, badges: loadBadges, adverts: loadAdverts, listings: loadListings, routes: loadRoutes, ratings: loadRatings, kb: loadKb }[id])(); }
+
+  function openMenu() { $('side').classList.add('open'); $('scrim').classList.remove('hidden'); $('menuBtn').setAttribute('aria-expanded', 'true'); }
+  function closeMenu() { $('side').classList.remove('open'); $('scrim').classList.add('hidden'); $('menuBtn').setAttribute('aria-expanded', 'false'); }
+  $('menuBtn').addEventListener('click', () => ($('side').classList.contains('open') ? closeMenu() : openMenu()));
+  $('scrim').addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeMenu(); disarm(); } });
+
+  /* ---------- two-step confirm ---------- */
+  function disarm() {
+    if (!state.armed) return;
+    const a = state.armed; clearTimeout(a.timer); state.armed = null;
+    if (a.btn && a.btn.isConnected) { a.btn.classList.remove('armed'); a.btn.textContent = a.orig; a.btn.removeAttribute('aria-live'); }
+  }
+  // Returns true when this click is the confirming second click.
+  function confirmTwice(btn, confirmText) {
+    if (state.armed && state.armed.btn === btn) { const ok = true; disarm(); return ok; }
+    disarm();
+    const orig = btn.textContent;
+    btn.classList.add('armed'); btn.textContent = confirmText || 'Click again to confirm';
+    state.armed = { btn, orig, timer: setTimeout(disarm, 6000) };
+    return false;
+  }
+  async function busy(btn, fn) {
+    const orig = btn.textContent; btn.disabled = true; btn.textContent = 'Working...';
+    try { return await fn(); } finally { if (btn.isConnected) { btn.disabled = false; btn.textContent = orig; } }
+  }
+
+  /* ---------- overview ---------- */
+  async function loadOverview() {
+    $('lastRefresh').textContent = 'Loading...';
+    try {
+      state.stats = await api('GET', '/api/admin/stats');
+      state.pending.badges = num(state.stats.badgesPending); state.pending.adverts = num(state.stats.advertsPending);
+      state.refreshedAt = new Date();
+      updateCounts(); renderOverview();
+    } catch (e) {
+      $('lastRefresh').textContent = 'Failed to load';
+      setBox('statCards', '<div class="panel" style="grid-column:1/-1"><div class="empty"><p style="color:var(--red);font-weight:700;margin:0 0 10px">' + esc(e.message) + '</p></div></div>');
+      toast(e.message, true);
+    }
+  }
+  function renderOverview() {
+    const s = state.stats; if (!s) { setBox('statCards', '<div class="loading" role="status" style="grid-column:1/-1">Loading...</div>'); return; }
+    const plans = s.plans || {};
+    const planTxt = ['free', 'biashara', 'agribusiness'].map((p) => p + ' ' + fmtN(plans[p])).join(' / ');
+    const cards = [
+      ['Users', s.users, 'seller ' + fmtN(s.sellers) + ' / buyer ' + fmtN(s.buyers) + ' / transporter ' + fmtN(s.transporters), '#34d399'],
+      ['Listings', fmtN(s.activeListings) + ' <small>/ ' + fmtN(s.listings) + '</small>', 'active / all listings', '#2dd4bf'],
+      ['Routes', s.routes, 'transporter routes', '#10b981'],
+      ['Listing views', s.views, 'total page views', '#8af0c4'],
+      ['Thumbs', s.votes, 'likes and dislikes', '#bef264'],
+      ['Ratings', s.ratings, 'user ratings', '#fbbf24'],
+      ['Follows', s.follows, 'follow links', '#7ec5ff'],
+      ['Photos', s.photos, 'listing photos', '#5eead4'],
+      ['Quote requests', s.quotes, 'transport quotes', '#34d399'],
+      ['New users (7 days)', s.newUsers7d, 'signed up this week', '#2dd4bf'],
+      ['Blue badges', fmtN(s.badgesActive) + ' <small>active</small>', fmtN(s.badgesPending) + ' request(s) pending', '#60a5fa'],
+      ['Adverts', fmtN(s.advertsActive) + ' <small>active</small>', fmtN(s.advertsPending) + ' pending approval', '#f0abfc'],
+      ['Plans', '', planTxt, '#8af0c4']
+    ];
+    setBox('statCards', cards.map((c) => '<div class="stat" style="--c:' + c[3] + '"><div class="k">' + esc(c[0]) + '</div><div class="v">' +
+      (c[1] === '' ? '<small>users per plan</small>' : (typeof c[1] === 'number' || /^\d+$/.test(String(c[1])) ? fmtN(c[1]) : c[1])) + '</div><div class="s">' + esc(c[2]) + '</div></div>').join(''));
+    renderSignups(s.signups || []);
+    const db = [['users', s.users], ['listings', s.listings], ['routes', s.routes], ['ratings', s.ratings], ['follows', s.follows], ['listing_views', s.views], ['listing_votes', s.votes], ['listing_images', s.photos], ['quote_requests', s.quotes], ['notifications', s.notifications]];
+    setBox('dbList', db.map((r) => '<dt>' + esc(r[0]) + '</dt><dd>' + fmtN(r[1]) + '</dd>').join(''));
+    $('lastRefresh').textContent = state.refreshedAt ? 'Last refreshed ' + state.refreshedAt.toLocaleTimeString('en-GB') : '';
+  }
+  function renderSignups(rows) {
+    if (!rows.length) { setBox('signups', '<div class="empty">No sign-up data.</div>'); return; }
+    const total = rows.reduce((a, r) => a + num(r.count), 0);
+    const max = Math.max(1, ...rows.map((r) => num(r.count)));
+    const W = 700, H = 230, pl = 10, pr = 10, pt = 22, pb = 34, cw = (W - pl - pr) / rows.length, bw = cw * 0.62, ch = H - pt - pb;
+    let svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="New sign-ups per day for the last 14 days, ' + total + ' in total"><defs><linearGradient id="barg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8af0c4"/><stop offset="0.55" stop-color="#10b981"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs>';
+    svg += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + (pt + ch) + '" y2="' + (pt + ch) + '" stroke="rgba(160,235,205,0.25)"/>';
+    rows.forEach((r, i) => {
+      const c = num(r.count), h = c ? Math.max(4, (c / max) * ch) : 0, x = pl + i * cw + (cw - bw) / 2, y = pt + ch - h;
+      const d = parseDate(r.date);
+      const lab = d ? d.getDate() + ' ' + d.toLocaleDateString('en-GB', { month: 'short' }) : '';
+      svg += '<g><title>' + esc(lab + ': ' + c + ' sign-up(s)') + '</title>' + (h ? '<rect class="b" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="4"/>' : '') +
+        '<text class="val" x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle">' + c + '</text>' +
+        '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 12) + '" text-anchor="middle">' + esc(i % 2 === 0 || rows.length < 8 ? lab : '') + '</text></g>';
+    });
+    svg += '</svg>';
+    setBox('signups', svg + '<p class="small muted" style="margin:8px 0 0">' + (total ? fmtN(total) + ' new user(s) in the last 14 days.' : 'No new users in the last 14 days.') + '</p>');
+  }
+  $('refreshBtn').addEventListener('click', async (e) => { await busy(e.currentTarget, loadOverview); toast('Overview refreshed'); });
+
+  /* ---------- users ---------- */
+  async function loadUsers() {
+    loadingBox('usersBox');
+    try { state.users = await api('GET', '/api/admin/users' + qs({ search: $('globalSearch').value.trim(), role: $('roleFilter').value })); renderUsers(); }
+    catch (e) { errorBox('usersBox', e, 'users'); }
+  }
+  function renderUsers() {
+    const rows = state.users || [];
+    $('userCount').textContent = rows.length + ' user(s)';
+    if (!rows.length) { setBox('usersBox', '<div class="empty">No users match.</div>'); return; }
+    setBox('usersBox', '<div class="tw"><table class="stack"><thead><tr><th>User</th><th>Role</th><th>Plan</th><th>Blue badge</th><th>Member since</th><th>Actions</th></tr></thead><tbody>' + rows.map((u) => {
+      const b = badgeInfo(u.badge_until), id = Number(u.id);
+      return '<tr>' +
+        cell('User', '<strong class="wrap-text">' + esc(u.full_name || 'Unknown') + '</strong><span class="sub">' + esc(u.email) + '</span><span class="sub">' + esc(u.phone || 'no phone') + (u.location ? ' / ' + esc(u.location) : '') + '</span>') +
+        cell('Role', '<select class="inline-sel" data-change="role" data-id="' + id + '" aria-label="Role for ' + esc(u.full_name) + '">' + ['buyer', 'seller', 'transporter'].map((r) => '<option value="' + r + '"' + (r === u.role ? ' selected' : '') + '>' + r + '</option>').join('') + '</select>') +
+        cell('Plan', '<select class="inline-sel" data-change="plan" data-id="' + id + '" aria-label="Plan for ' + esc(u.full_name) + '">' + ['free', 'biashara', 'agribusiness'].map((p) => '<option value="' + p + '"' + (p === u.plan ? ' selected' : '') + '>' + p + '</option>').join('') + '</select>') +
+        cell('Blue badge', chip(b.text, b.on ? 'good' : (u.badge_until ? 'bad' : 'info'))) +
+        cell('Member since', esc(fmtDate(u.created_at))) +
+        cell('Actions', '<div class="acts"><button class="btn sm ok" type="button" data-act="grant-badge" data-id="' + id + '">Grant badge (6 months)</button>' +
+          (u.badge_until ? '<button class="btn sm" type="button" data-act="revoke-badge" data-id="' + id + '">Revoke badge</button>' : '') +
+          '<button class="btn sm danger" type="button" data-act="del-user" data-id="' + id + '">Delete</button></div>', 'nolabel') + '</tr>';
+    }).join('') + '</tbody></table></div>');
+  }
+
+  /* ---------- badges ---------- */
+  function renderSeg(id, opts, cur, attr) {
+    setBox(id, opts.map((o) => '<button type="button" data-' + attr + '="' + o[0] + '" aria-pressed="' + (cur === o[0]) + '">' + esc(o[1]) + '</button>').join(''));
+  }
+  async function loadBadges() {
+    renderSeg('badgeSeg', [['pending', 'Pending'], ['verified', 'Verified'], ['rejected', 'Rejected'], ['', 'All']], state.badgeFilter, 'bf');
+    loadingBox('badgesBox');
+    try { state.badges = await api('GET', '/api/admin/badges' + qs({ status: state.badgeFilter })); renderBadges(); }
+    catch (e) { errorBox('badgesBox', e, 'badges'); }
+  }
+  function renderBadges() {
+    const rows = state.badges || [];
+    if (!rows.length) { setBox('badgesBox', '<div class="empty">' + (state.badgeFilter === 'pending' ? 'No pending badge requests.' : 'No badge requests with this status.') + '</div>'); return; }
+    setBox('badgesBox', '<div class="tw"><table class="stack"><thead><tr><th>User</th><th>Contact</th><th>Payment ref</th><th>Requested</th><th>Badge ends</th><th>Status</th><th>Decision</th></tr></thead><tbody>' + rows.map((b) => {
+      const id = Number(b.id), pend = b.status === 'pending', bi = badgeInfo(b.badge_until);
+      return '<tr>' +
+        cell('User', '<strong class="wrap-text">' + esc(b.full_name) + '</strong><span class="sub">' + chip(b.role || '', b.role) + '</span><span class="sub">' + esc(b.location || 'no location') + '</span>') +
+        cell('Contact', '<span class="wrap-text">' + esc(b.email) + '</span><span class="sub">' + esc(b.phone || 'no phone') + '</span>') +
+        cell('Payment ref', b.payment_ref ? '<span class="wrap-text">' + esc(b.payment_ref) + '</span>' : '<span class="muted">none given</span>') +
+        cell('Requested', esc(fmtDateTime(b.requested_at || b.created_at))) +
+        cell('Badge ends', b.badge_until ? esc(fmtDate(b.badge_until)) + '<span class="sub">' + esc(bi.on ? 'active now' : 'expired') + '</span>' : '<span class="muted">no badge yet</span>') +
+        cell('Status', chip(b.status, b.status === 'verified' ? 'good' : b.status === 'rejected' ? 'bad' : '') + (!pend && b.note ? '<span class="sub wrap-text">Note: ' + esc(b.note) + '</span>' : '') + (!pend && b.period_end ? '<span class="sub">to ' + esc(fmtDate(b.period_end)) + '</span>' : '')) +
+        cell('Decision', pend ? '<div class="field" style="margin:0 0 8px"><label class="sr" for="bn' + id + '">Note for ' + esc(b.full_name) + '</label><input class="note-in" id="bn' + id + '" type="text" maxlength="300" placeholder="Note (optional)"></div>' +
+          '<div class="acts"><button class="btn sm ok" type="button" data-act="badge-verify" data-id="' + id + '">Verify (visit done and payment confirmed)</button><button class="btn sm danger" type="button" data-act="badge-reject" data-id="' + id + '">Reject</button></div>' +
+          '<span class="sub">Verifying grants 6 months' + (b.badge_until ? ' on top of the current end date' : '') + '.</span>' : '<span class="muted">' + esc(b.decided_at ? 'Decided ' + fmtDate(b.decided_at) : '') + '</span>', 'nolabel') + '</tr>';
+    }).join('') + '</tbody></table></div>');
+  }
+
+  /* ---------- adverts ---------- */
+  async function loadAdverts() {
+    renderSeg('advertSeg', [['pending', 'Pending'], ['active', 'Active'], ['rejected', 'Rejected'], ['ended', 'Ended'], ['', 'All']], state.advertFilter, 'af');
+    loadingBox('advertsBox');
+    try { state.adverts = await api('GET', '/api/admin/adverts' + qs({ status: state.advertFilter })); renderAdverts(); }
+    catch (e) { errorBox('advertsBox', e, 'adverts'); }
+  }
+  function renderAdverts() {
+    const rows = state.adverts || [];
+    if (!rows.length) { setBox('advertsBox', '<div class="empty">' + (state.advertFilter === 'pending' ? 'No adverts waiting for approval.' : 'No adverts with this status.') + '</div>'); return; }
+    setBox('advertsBox', '<div class="tw"><table class="stack"><thead><tr><th>Advertiser</th><th>Kind</th><th>Content</th><th>Reach</th><th>Dates</th><th>Status</th><th>Decision</th></tr></thead><tbody>' + rows.map((a) => {
+      const id = Number(a.id), sponsored = a.kind === 'sponsored';
+      let dec = '';
+      if (a.status === 'pending') {
+        dec = '<div class="acts" style="margin-bottom:8px"><div class="field" style="margin:0"><label class="sr" for="ad' + id + '">Days to run</label><input class="note-in" id="ad' + id + '" type="number" min="1" max="365" value="30" style="width:84px" aria-label="Days to run"></div><span class="small muted">days</span>' +
+          '<button class="btn sm ok" type="button" data-act="adv-approve" data-id="' + id + '">Approve</button></div>' +
+          '<div class="item-note" style="margin-top:0"><label class="sr" for="an' + id + '">Note</label><input class="note-in" id="an' + id + '" type="text" maxlength="300" placeholder="Note (optional)"><button class="btn sm danger" type="button" data-act="adv-reject" data-id="' + id + '">Reject</button></div>';
+      } else if (a.status === 'active') {
+        dec = '<button class="btn sm danger" type="button" data-act="adv-end" data-id="' + id + '">End advert</button>';
+      } else dec = '<span class="muted">' + (a.admin_note ? 'Note: ' + esc(a.admin_note) : '') + '</span>';
+      return '<tr>' +
+        cell('Advertiser', '<strong class="wrap-text">' + esc(a.full_name) + '</strong><span class="sub wrap-text">' + esc(a.email) + '</span>') +
+        cell('Kind', chip(sponsored ? 'sponsored listing' : 'advert', sponsored ? 'teal' : 'info') + (sponsored ? '<span class="sub wrap-text">Listing: ' + esc(a.listing_title || 'listing no longer exists') + '</span>' : '')) +
+        cell('Content', '<strong class="wrap-text">' + esc(a.title) + '</strong>' + (a.body ? '<span class="sub">' + esc(a.body) + '</span>' : '') + (a.link_url ? '<span class="sub wrap-text">Link: ' + esc(a.link_url) + '</span>' : '')) +
+        cell('Reach', fmtN(a.impressions) + ' impressions<span class="sub">' + fmtN(a.clicks) + ' clicks</span>') +
+        cell('Dates', 'Submitted ' + esc(fmtDate(a.created_at)) + (a.starts_at ? '<span class="sub">' + esc(fmtDate(a.starts_at)) + ' to ' + esc(fmtDate(a.ends_at)) + '</span>' : '')) +
+        cell('Status', chip(a.status, a.status === 'active' ? 'active' : a.status === 'rejected' ? 'bad' : a.status === 'ended' ? 'ended' : '')) +
+        cell('Decision', dec, 'nolabel') + '</tr>';
+    }).join('') + '</tbody></table></div>');
+  }
+
+  /* ---------- listings / routes / ratings ---------- */
+  async function loadListings() {
+    loadingBox('listingsBox');
+    try { state.listings = await api('GET', '/api/admin/listings' + qs({ search: $('globalSearch').value.trim(), status: $('statusFilter').value })); renderListings(); }
+    catch (e) { errorBox('listingsBox', e, 'listings'); }
+  }
+  function renderListings() {
+    const rows = (state.listings || []).slice(0, 300);
+    $('listingCount').textContent = (state.listings.length > 300 ? 'Showing first 300 of ' + state.listings.length : state.listings.length + ' listing(s)');
+    if (!rows.length) { setBox('listingsBox', '<div class="empty">No listings match.</div>'); return; }
+    setBox('listingsBox', '<div class="tw"><table class="stack"><thead><tr><th>Listing</th><th>Seller</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody>' + rows.map((l) => {
+      const id = Number(l.id), st = l.status || 'available';
+      return '<tr>' +
+        cell('Listing', '<strong class="wrap-text">' + esc(l.title || l.commodity) + '</strong><span class="sub">' + esc(l.commodity || '') + (l.quantity_kg ? ' / ' + fmtN(l.quantity_kg) + ' kg' : '') + '</span>') +
+        cell('Seller', '<span class="wrap-text">' + esc(l.seller_name) + '</span>') +
+        cell('Price', 'KSh ' + fmtN(l.price_per_kg) + '<span class="sub">per kg</span>') +
+        cell('Status', chip(st, st === 'available' ? 'available' : st === 'paused' ? 'paused' : '')) +
+        cell('Actions', '<div class="acts"><label class="sr" for="ls' + id + '">Set status for ' + esc(l.title || l.commodity) + '</label><select class="inline-sel" id="ls' + id + '" data-change="lstatus" data-id="' + id + '" data-prev="' + esc(st) + '">' +
+          ['available', 'almost_out', 'paused'].map((s) => '<option value="' + s + '"' + (s === st ? ' selected' : '') + '>' + s.replace('_', ' ') + '</option>').join('') + '</select>' +
+          '<button class="btn sm ok" type="button" data-act="list-sold" data-id="' + id + '">Mark sold (removes it)</button>' +
+          '<button class="btn sm danger" type="button" data-act="del-listing" data-id="' + id + '">Delete</button></div>', 'nolabel') + '</tr>';
+    }).join('') + '</tbody></table></div>');
+  }
+  async function loadRoutes() {
+    loadingBox('routesBox');
+    try { state.routes = await api('GET', '/api/admin/routes' + qs({ search: $('globalSearch').value.trim() })); renderRoutes(); }
+    catch (e) { errorBox('routesBox', e, 'routes'); }
+  }
+  function renderRoutes() {
+    const rows = (state.routes || []).slice(0, 300);
+    $('routeCount').textContent = state.routes.length + ' route(s)';
+    if (!rows.length) { setBox('routesBox', '<div class="empty">No routes match.</div>'); return; }
+    setBox('routesBox', '<div class="tw"><table class="stack"><thead><tr><th>Route</th><th>From to</th><th>Transporter</th><th>Rate</th><th>Actions</th></tr></thead><tbody>' + rows.map((r) =>
+      '<tr>' + cell('Route', '<strong class="wrap-text">' + esc(r.route_name) + '</strong>') + cell('From to', '<span class="wrap-text">' + esc(r.origin) + ' &rarr; ' + esc(r.destination) + '</span>') +
+      cell('Transporter', '<span class="wrap-text">' + esc(r.transporter_name) + '</span>') + cell('Rate', 'KSh ' + fmtN(r.rate)) +
+      cell('Actions', '<button class="btn sm danger" type="button" data-act="del-route" data-id="' + Number(r.id) + '">Delete</button>', 'nolabel') + '</tr>').join('') + '</tbody></table></div>');
+  }
+  async function loadRatings() {
+    loadingBox('ratingsBox');
+    try { state.ratings = await api('GET', '/api/admin/ratings'); renderRatings(); }
+    catch (e) { errorBox('ratingsBox', e, 'ratings'); }
+  }
+  function renderRatings() {
+    const rows = state.ratings || [];
+    $('ratingCount').textContent = rows.length + ' rating(s)';
+    if (!rows.length) { setBox('ratingsBox', '<div class="empty">No ratings yet.</div>'); return; }
+    setBox('ratingsBox', '<div class="tw"><table class="stack"><thead><tr><th>Rated user</th><th>By</th><th>Stars</th><th>Comment</th><th>Date</th><th>Actions</th></tr></thead><tbody>' + rows.map((r) => {
+      const n = Math.max(0, Math.min(5, Math.round(num(r.stars))));
+      return '<tr>' + cell('Rated user', '<strong class="wrap-text">' + esc(r.ratee_name) + '</strong>') + cell('By', '<span class="wrap-text">' + esc(r.rater_name) + '</span>') +
+        cell('Stars', '<span style="color:var(--amber);letter-spacing:2px" aria-label="' + n + ' out of 5">' + '★'.repeat(n) + '<span style="color:var(--line2)">' + '★'.repeat(5 - n) + '</span></span>') +
+        cell('Comment', r.comment ? '<span class="wrap-text">' + esc(r.comment) + '</span>' : '<span class="muted">no comment</span>') + cell('Date', esc(fmtDate(r.created_at))) +
+        cell('Actions', '<button class="btn sm danger" type="button" data-act="del-rating" data-id="' + Number(r.id) + '">Delete rating</button>', 'nolabel') + '</tr>';
+    }).join('') + '</tbody></table></div>');
+  }
+
+  /* ---------- knowledge base ---------- */
+  async function loadKb() {
+    loadingBox('kbBox');
+    try { state.kb = await api('GET', '/api/admin/kb'); renderKb(); }
+    catch (e) { errorBox('kbBox', e, 'kb'); }
+  }
+  function renderKb() {
+    if (!state.kb.length) { setBox('kbBox', '<div class="empty">No articles yet. Create the first one with the form.</div>'); return; }
+    setBox('kbBox', '<table><thead><tr><th>Title</th><th>Lang</th><th>Published</th><th>Actions</th></tr></thead><tbody>' + state.kb.map((a) =>
+      '<tr><td><strong class="wrap-text">' + esc(a.title) + '</strong><span class="sub">' + esc(a.category || '') + '</span></td><td>' + esc(a.lang) + '</td><td>' + chip(a.published ? 'yes' : 'no', a.published ? 'good' : 'info') + '</td>' +
+      '<td><div class="acts"><button class="btn sm" type="button" data-act="kb-edit" data-id="' + Number(a.id) + '">Edit</button><button class="btn sm danger" type="button" data-act="kb-del" data-id="' + Number(a.id) + '">Delete</button></div></td></tr>').join('') + '</tbody></table>');
+  }
+  function resetKb() { $('kbForm').reset(); $('kbId').value = ''; $('kbSave').textContent = 'Create article'; }
+  $('kbReset').addEventListener('click', resetKb);
+  $('kbForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = $('kbId').value, btn = $('kbSave');
+    if (!$('kbTitle').value.trim() || !$('kbBody').value.trim()) { toast('Title and body are required.', true); return; }
+    const body = { title: $('kbTitle').value, lang: $('kbLang').value, category: $('kbCategory').value, tags: $('kbTags').value, source: $('kbSource').value, body: $('kbBody').value, published: $('kbPublished').checked };
+    try {
+      const data = await busy(btn, () => api(id ? 'PUT' : 'POST', id ? '/api/admin/kb/' + encodeURIComponent(id) : '/api/admin/kb', body));
+      toast((data && data.message) || (id ? 'Article updated' : 'Article created'));
+      if (!id) resetKb();
       loadKb();
-    }
+    } catch (err) { toast(err.message, true); }
+  });
 
-    async function logoutAdmin() {
-      await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' });
-      showLogin();
+  /* ---------- actions (delegated) ---------- */
+  function rowName(list, id, f) { const x = list.find((r) => Number(r.id) === id); return x ? (x[f] || '') : ''; }
+  async function act(fn, okMsg, reloadIds) {
+    try { const d = await fn(); toast(typeof okMsg === 'function' ? okMsg(d) : okMsg); }
+    catch (e) { if (e.message !== 'Not signed in') toast(e.message, true); }
+    for (const r of reloadIds) await reload(r);
+    refreshCounts();
+  }
+  document.addEventListener('click', async (e) => {
+    const f = e.target.closest('[data-bf],[data-af]');
+    if (f) {
+      if (f.dataset.bf !== undefined) { state.badgeFilter = f.dataset.bf; loadBadges(); } else { state.advertFilter = f.dataset.af; loadAdverts(); }
+      return;
     }
-
-    function chartFromBreakdown(rows, key) {
-      const maxValue = Math.max(...(rows.map((row) => Number(row.total || 0))), 1);
-      document.getElementById('chartBars').innerHTML = rows.map((row) => {
-        const value = Number(row.total || 0);
-        const height = Math.max(20, (value / maxValue) * 180);
-        const label = row[key] || 'n/a';
-        return `<div class="bar" data-label="${label}" style="height:${height}px;"></div>`;
-      }).join('');
-    }
-
-    function renderStats(summary) {
-      const stats = [
-        ['Users', summary.users],
-        ['Sellers', summary.sellers],
-        ['Transporters', summary.transporters],
-        ['Listings', summary.listings],
-        ['Routes', summary.routes]
-      ];
-      document.getElementById('stats').innerHTML = stats.map(([label, value]) => `
-        <div class="card">
-          <span class="label">${label}</span>
-          <div class="value">${value}</div>
-        </div>
-      `).join('');
-    }
-
-    // Escape user-supplied text before putting it in HTML (prevents stored XSS in the admin panel).
-    function esc(v) {
-      return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    }
-
-    function renderUsers(rows) {
-      document.getElementById('userTable').innerHTML = (rows || []).map((row) => `
-        <tr>
-          <td>${esc(row.full_name || 'Unknown')}</td>
-          <td>${esc(row.email)}</td>
-          <td>${esc(row.phone || 'n/a')}</td>
-          <td><select class="role-select" onchange="changeRole(${Number(row.id)}, this.value)" aria-label="Role">${['buyer','seller','transporter'].map((r) => `<option value="${r}"${r === row.role ? ' selected' : ''}>${r}</option>`).join('')}</select></td>
-          <td>${new Date(row.created_at).toLocaleDateString()}</td>
-          <td><button class="button danger" onclick="deleteUser(${Number(row.id)})">Delete</button></td>
-        </tr>
-      `).join('');
-    }
-
-    function renderListings(rows) {
-      document.getElementById('listingTable').innerHTML = (rows || []).map((row) => `
-        <tr>
-          <td>${esc(row.title || row.commodity)}</td>
-          <td>${esc(row.seller_name)}</td>
-          <td>KSh ${Number(row.price_per_kg || 0).toLocaleString()}</td>
-          <td><span class="status-chip ${esc(row.status || 'available')}">${esc((row.status || 'available').replace('_', ' '))}</span></td>
-          <td>
-            <div class="inline">
-              <button class="button secondary" onclick="cycleListingStatus(${Number(row.id)}, '${esc(row.status || 'available')}')">Update</button>
-              <button class="button danger" onclick="deleteListing(${Number(row.id)})">Delete</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderRoutes(rows) {
-      document.getElementById('routeTable').innerHTML = (rows || []).map((row) => `
-        <tr>
-          <td>${esc(row.route_name)}</td>
-          <td>${esc(row.origin)} → ${esc(row.destination)}</td>
-          <td>KSh ${Number(row.rate || 0).toLocaleString()}</td>
-          <td><button class="button danger" onclick="deleteRoute(${Number(row.id)})">Delete</button></td>
-        </tr>
-      `).join('');
-    }
-
-    async function deleteUser(id) {
-      if (!confirm('Delete this user and all of their listings/routes?')) return;
-      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE', credentials: 'same-origin' });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || 'Delete failed');
-        return;
+    const btn = e.target.closest('button[data-act]'); if (!btn) { if (state.armed && !e.target.closest('.armed')) disarm(); return; }
+    const a = btn.dataset.act, id = Number(btn.dataset.id);
+    switch (a) {
+      case 'retry': return reload(btn.dataset.retry);
+      case 'grant-badge': {
+        const n = rowName(state.users, id, 'full_name');
+        if (!confirmTwice(btn, 'Confirm: grant 6 months')) return;
+        return busy(btn, () => act(() => api('POST', '/api/admin/users/' + id + '/badge', {}), (d) => 'Badge granted to ' + n + ' until ' + fmtDate(d.until), ['users']));
       }
-      loadOverview();
-    }
-
-    async function deleteListing(id) {
-      if (!confirm('Delete this listing?')) return;
-      const res = await fetch(`/api/admin/listings/${id}`, { method: 'DELETE', credentials: 'same-origin' });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || 'Delete failed');
-        return;
+      case 'revoke-badge': {
+        const n = rowName(state.users, id, 'full_name');
+        if (!confirmTwice(btn, 'Confirm: revoke')) return;
+        return busy(btn, () => act(() => api('POST', '/api/admin/users/' + id + '/badge', { action: 'revoke' }), 'Badge revoked for ' + n, ['users']));
       }
-      loadOverview();
-    }
-
-    async function cycleListingStatus(id, currentStatus) {
-      const next = {
-        available: 'almost_out',
-        almost_out: 'paused',
-        paused: 'sold',
-        sold: 'available'
-      }[currentStatus || 'available'] || 'available';
-      const res = await fetch(`/api/admin/listings/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ status: next })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || 'Status update failed');
-        return;
+      case 'del-user': {
+        const n = rowName(state.users, id, 'full_name');
+        if (!confirmTwice(btn, 'Confirm: delete user + data')) return;
+        return busy(btn, () => act(() => api('DELETE', '/api/admin/users/' + id), 'Deleted user ' + n, ['users']));
       }
-      loadOverview();
-    }
-
-    async function deleteRoute(id) {
-      if (!confirm('Delete this route?')) return;
-      const res = await fetch(`/api/admin/routes/${id}`, { method: 'DELETE', credentials: 'same-origin' });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || 'Delete failed');
-        return;
+      case 'badge-verify': {
+        if (!confirmTwice(btn, 'Confirm: visit done, payment received')) return;
+        const note = ($('bn' + id) || {}).value || '';
+        return busy(btn, () => act(() => api('POST', '/api/admin/badges/' + id + '/decision', { action: 'verify', note }), 'Badge verified (6 months granted)', ['badges', 'users']));
       }
-      loadOverview();
-    }
-
-    async function loadOverview(customFilters = null) {
-      const params = new URLSearchParams();
-      const search = customFilters?.search ?? document.getElementById('globalSearch').value.trim();
-      const role = customFilters?.role ?? document.getElementById('roleFilter').value;
-      const status = customFilters?.status ?? document.getElementById('statusFilter').value;
-      if (search) params.set('search', search);
-      if (role) params.set('role', role);
-      if (status) params.set('status', status);
-
-      try {
-        const res = await fetch(`/api/admin/overview?${params.toString()}`, { credentials: 'same-origin' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to load dashboard');
-
-        state.lastOverview = data;
-        renderStats(data.summary || {});
-        renderUsers(data.recentUsers || []);
-        renderListings(data.recentListings || []);
-        renderRoutes(data.recentRoutes || []);
-
-        if (Array.isArray(data.roleBreakdown) && data.roleBreakdown.length) {
-          chartFromBreakdown(data.roleBreakdown, 'role');
-        } else {
-          document.getElementById('chartBars').innerHTML = '<div class="muted">No role data available.</div>';
-        }
-
-        const generated = new Date(data.generatedAt).toLocaleString();
-        document.getElementById('summaryBox').innerHTML = `
-          <p><strong>Last refresh:</strong> ${generated}</p>
-          <p>Filters: ${esc(data.filters?.search || 'none')} / ${esc(data.filters?.role || 'all roles')} / ${esc(data.filters?.status || 'all statuses')}</p>
-        `;
-      } catch (error) {
-        document.getElementById('summaryBox').innerHTML = `<p class="danger" style="font-weight:700;">${esc(error.message)}</p>`;
+      case 'badge-reject': {
+        if (!confirmTwice(btn, 'Confirm: reject')) return;
+        const note = ($('bn' + id) || {}).value || '';
+        return busy(btn, () => act(() => api('POST', '/api/admin/badges/' + id + '/decision', { action: 'reject', note }), 'Badge request rejected', ['badges']));
+      }
+      case 'adv-approve': {
+        const days = Math.round(num(($('ad' + id) || {}).value));
+        if (days < 1 || days > 365) { toast('Days must be between 1 and 365.', true); $('ad' + id).focus(); return; }
+        if (!confirmTwice(btn, 'Confirm: run ' + days + ' days')) return;
+        const note = ($('an' + id) || {}).value || '';
+        return busy(btn, () => act(() => api('POST', '/api/admin/adverts/' + id + '/decision', { action: 'approve', days, note }), 'Advert approved for ' + days + ' days', ['adverts']));
+      }
+      case 'adv-reject': {
+        if (!confirmTwice(btn, 'Confirm: reject')) return;
+        const note = ($('an' + id) || {}).value || '';
+        return busy(btn, () => act(() => api('POST', '/api/admin/adverts/' + id + '/decision', { action: 'reject', note }), 'Advert rejected', ['adverts']));
+      }
+      case 'adv-end': {
+        if (!confirmTwice(btn, 'Confirm: end now')) return;
+        return busy(btn, () => act(() => api('POST', '/api/admin/adverts/' + id + '/decision', { action: 'end' }), 'Advert ended', ['adverts']));
+      }
+      case 'list-sold': {
+        const n = rowName(state.listings, id, 'title');
+        if (!confirmTwice(btn, 'Confirm: sold and REMOVE')) return;
+        return busy(btn, () => act(() => api('PUT', '/api/admin/listings/' + id + '/status', { status: 'sold' }), (d) => (d && d.deleted ? 'Marked sold and removed: ' + n : 'Listing updated'), ['listings']));
+      }
+      case 'del-listing': {
+        const n = rowName(state.listings, id, 'title');
+        if (!confirmTwice(btn, 'Confirm: delete listing')) return;
+        return busy(btn, () => act(() => api('DELETE', '/api/admin/listings/' + id), 'Deleted listing ' + n, ['listings']));
+      }
+      case 'del-route': {
+        if (!confirmTwice(btn, 'Confirm: delete route')) return;
+        return busy(btn, () => act(() => api('DELETE', '/api/admin/routes/' + id), 'Route deleted', ['routes']));
+      }
+      case 'del-rating': {
+        if (!confirmTwice(btn, 'Confirm: delete rating')) return;
+        return busy(btn, () => act(() => api('DELETE', '/api/admin/ratings/' + id), 'Rating deleted', ['ratings']));
+      }
+      case 'kb-edit': {
+        const x = state.kb.find((r) => Number(r.id) === id); if (!x) return;
+        $('kbId').value = x.id; $('kbTitle').value = x.title; $('kbLang').value = x.lang; $('kbCategory').value = x.category || ''; $('kbTags').value = x.tags || '';
+        $('kbSource').value = x.source || ''; $('kbBody').value = x.body; $('kbPublished').checked = !!x.published; $('kbSave').textContent = 'Update article';
+        $('kbTitle').focus(); $('kbForm').scrollIntoView({ behavior: 'smooth', block: 'center' }); return;
+      }
+      case 'kb-del': {
+        if (!confirmTwice(btn, 'Confirm: delete article')) return;
+        return busy(btn, () => act(() => api('DELETE', '/api/admin/kb/' + id), 'Article deleted', ['kb'])).then(resetKb);
       }
     }
+  });
+  document.addEventListener('change', async (e) => {
+    const s = e.target.closest('select[data-change]'); if (!s) return;
+    const id = Number(s.dataset.id), v = s.value;
+    if (s.dataset.change === 'role') { s.disabled = true; await act(() => api('PUT', '/api/admin/users/' + id, { role: v }), 'Role changed to ' + v, ['users']); }
+    else if (s.dataset.change === 'plan') {
+      const lim = { free: 5, biashara: 15, agribusiness: 30 }[v];
+      s.disabled = true; await act(() => api('PUT', '/api/admin/users/' + id + '/plan', { plan: v }), 'Plan set to ' + v + ' (' + lim + ' photos per listing)', ['users']);
+    } else if (s.dataset.change === 'lstatus') { s.disabled = true; await act(() => api('PUT', '/api/admin/listings/' + id + '/status', { status: v }), 'Listing status set to ' + v.replace('_', ' '), ['listings']); }
+  });
 
-    async function checkSession() {
-      try {
-        const res = await fetch('/api/admin/session', { credentials: 'same-origin' });
-        const data = await res.json();
-        if (data.isAdmin) {
-          showDashboard();
-          loadOverview();
-          loadKb();
-        } else {
-          showLogin();
-        }
-      } catch (error) {
-        showLogin();
-      }
-    }
+  let t = null;
+  function debounced() { clearTimeout(t); t = setTimeout(() => { if (state.sec === 'users') loadUsers(); else if (state.sec === 'listings') loadListings(); else if (state.sec === 'routes') loadRoutes(); }, 300); }
+  $('globalSearch').addEventListener('input', debounced);
+  $('roleFilter').addEventListener('change', loadUsers);
+  $('statusFilter').addEventListener('change', loadListings);
 
-    async function changeRole(id, role) {
-      const res = await fetch(`/api/admin/users/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ role }) });
-      const data = await res.json();
-      if (!res.ok) alert(data.error || 'Update failed');
-      loadOverview();
-    }
-
-    // ---- Knowledge base CRUD ----
-    state.kb = [];
-    async function loadKb() {
-      const res = await fetch('/api/admin/kb', { credentials: 'same-origin' });
-      if (!res.ok) return;
-      state.kb = await res.json();
-      document.getElementById('kbTable').innerHTML = state.kb.map((a) => `
-        <tr>
-          <td>${esc(a.title)}</td>
-          <td>${esc(a.lang)}</td>
-          <td>${esc(a.category || '')}</td>
-          <td>${a.published ? 'Yes' : 'No'}</td>
-          <td><div class="inline">
-            <button class="button secondary" onclick="editKb(${Number(a.id)})">Edit</button>
-            <button class="button danger" onclick="deleteKb(${Number(a.id)})">Delete</button>
-          </div></td>
-        </tr>`).join('') || '<tr><td colspan="5" class="muted">No articles yet.</td></tr>';
-    }
-    function resetKb() {
-      document.getElementById('kbForm').reset();
-      document.getElementById('kbId').value = '';
-      document.getElementById('kbSave').textContent = 'Create article';
-      document.getElementById('kbMsg').textContent = '';
-    }
-    function editKb(id) {
-      const a = state.kb.find((x) => x.id === id);
-      if (!a) return;
-      document.getElementById('kbId').value = a.id;
-      document.getElementById('kbTitle').value = a.title;
-      document.getElementById('kbLang').value = a.lang;
-      document.getElementById('kbCategory').value = a.category || '';
-      document.getElementById('kbTags').value = a.tags || '';
-      document.getElementById('kbSource').value = a.source || '';
-      document.getElementById('kbBody').value = a.body;
-      document.getElementById('kbPublished').checked = !!a.published;
-      document.getElementById('kbSave').textContent = 'Update article';
-      document.getElementById('kbForm').scrollIntoView({ behavior: 'smooth' });
-    }
-    async function saveKb(e) {
-      e.preventDefault();
-      const id = document.getElementById('kbId').value;
-      const body = {
-        title: document.getElementById('kbTitle').value,
-        lang: document.getElementById('kbLang').value,
-        category: document.getElementById('kbCategory').value,
-        tags: document.getElementById('kbTags').value,
-        source: document.getElementById('kbSource').value,
-        body: document.getElementById('kbBody').value,
-        published: document.getElementById('kbPublished').checked
-      };
-      const res = await fetch(id ? `/api/admin/kb/${id}` : '/api/admin/kb', { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) });
-      const data = await res.json();
-      document.getElementById('kbMsg').textContent = res.ok ? (data.message || 'Saved') : (data.error || 'Save failed');
-      if (res.ok) { if (!id) resetKb(); loadKb(); }
-    }
-    async function deleteKb(id) {
-      if (!confirm('Delete this article? Ask Mkulima AI will stop using it.')) return;
-      const res = await fetch(`/api/admin/kb/${id}`, { method: 'DELETE', credentials: 'same-origin' });
-      const data = await res.json();
-      if (!res.ok) alert(data.error || 'Delete failed');
-      resetKb();
-      loadKb();
-    }
-
-    checkSession();
-  </script>
+  checkSession();
+})();
+</script>
 </body>
 </html>

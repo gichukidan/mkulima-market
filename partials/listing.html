@@ -1,0 +1,35 @@
+<section class="ls" id="top">
+  <div class="w">
+    <nav class="crumbs"><a href="#/home/produce" id="backTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span data-t="back_market">Back to marketplace</span></a></nav>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <div id="loading" class="grid" aria-busy="true">
+      <div class="skel" style="min-height:360px"></div>
+      <div class="skel" style="min-height:360px"></div>
+    </div>
+
+    <div id="notfound" class="empty-state" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14l-1.5 10a2 2 0 0 1-2 1.7H8.5a2 2 0 0 1-2-1.7L5 9zM9 9l3-5 3 5"/></svg>
+      <h1 data-t="nf_h">Listing not found</h1>
+      <p data-t="nf_p">This listing is no longer available. It may have been sold.</p>
+      <a class="btn primary" href="#/home/produce" data-t="back_market2">Back to marketplace</a>
+    </div>
+
+    <div id="errbox" class="empty-state" hidden>
+      <h1 data-t="err_h">Could not load this listing</h1>
+      <p id="errmsg"></p>
+      <button class="btn primary" type="button" id="retry" data-t="retry">Try again</button>
+    </div>
+
+    <div id="main" hidden>
+      <div id="ownerBar" class="owner" hidden></div>
+      <div class="grid">
+        <div class="gal">
+          <div class="stage" id="stage"></div>
+          <div class="thumbs" id="thumbs" role="group" data-a="photos_aria" aria-label="Photos"></div>
+        </div>
+        <div class="info" id="info"></div>
+      </div>
+    </div>
+  </div>
+</section>

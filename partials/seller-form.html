@@ -8,65 +8,94 @@
       <form id="sellerForm" class="stack-form">
         <div class="two-col">
           <label>
-            <span>Listing title</span>
-            <input type="text" name="title" placeholder="Tomato crates" required>
+            <span data-t="lTitle">Listing title</span>
+            <input type="text" name="title" data-p="pTitle" placeholder="Tomato crates (Kreti za nyanya)" required maxlength="120">
           </label>
           <label>
-            <span>Commodity</span>
-            <input type="text" name="commodity" placeholder="Tomatoes" required>
+            <span data-t="lCommodity">Commodity</span>
+            <input type="text" name="commodity" list="commodityList" data-p="pCommodity" placeholder="Tomatoes (Nyanya)" required maxlength="60" autocomplete="off">
+            <datalist id="commodityList">
+              <option value="Tomatoes (Nyanya)"></option><option value="Potatoes (Viazi)"></option><option value="Onions (Vitunguu)"></option>
+              <option value="Kale (Sukuma wiki)"></option><option value="Cabbages (Kabichi)"></option><option value="Carrots (Karoti)"></option>
+              <option value="Maize (Mahindi)"></option><option value="Beans (Maharagwe)"></option><option value="Green grams (Ndengu)"></option>
+              <option value="Rice (Mchele)"></option><option value="Bananas (Ndizi)"></option><option value="Mangoes (Maembe)"></option>
+              <option value="Avocados (Parachichi)"></option><option value="Fish (Samaki)"></option><option value="Eggs (Mayai)"></option>
+              <option value="Milk (Maziwa)"></option><option value="Goats (Mbuzi)"></option><option value="Cattle (Ng'ombe)"></option>
+              <option value="Chicken (Kuku)"></option>
+            </datalist>
+            <small class="hint" data-t="hSearch">Buyers can search in English or Kiswahili, for example "tomatoes" or "nyanya". Pick from the list or type your own.</small>
           </label>
         </div>
         <div class="two-col">
           <label>
-            <span>Grade</span>
-            <input type="text" name="grade" placeholder="Grade A">
+            <span data-t="lGrade">Grade</span>
+            <input type="text" name="grade" data-p="pGrade" placeholder="Grade A" maxlength="40">
           </label>
           <label>
-            <span>Packed in</span>
+            <span data-t="lUnit">Packed in</span>
             <select name="unit">
-              <option value="kg">kg</option>
-              <option value="crate">crate</option>
-              <option value="bag">bag</option>
-              <option value="box">box</option>
+              <option value="kg" data-t="uKg">kg</option>
+              <option value="crate" data-t="uCrate">crate</option>
+              <option value="bag" data-t="uBag">bag</option>
+              <option value="box" data-t="uBox">box</option>
             </select>
           </label>
         </div>
         <div class="two-col">
           <label>
-            <span>Total quantity (kg)</span>
-            <input type="number" name="quantityKg" min="1" step="0.1" placeholder="120" required>
+            <span data-t="lQty">Total quantity (kg)</span>
+            <input type="number" name="quantityKg" min="1" step="0.1" placeholder="120" required inputmode="decimal">
           </label>
           <label>
-            <span>Price per kg (KSh)</span>
-            <input type="number" name="pricePerKg" min="1" step="0.1" placeholder="75" required>
+            <span data-t="lPrice">Price per kg (KSh)</span>
+            <input type="number" name="pricePerKg" min="1" step="0.1" placeholder="75" required inputmode="decimal">
           </label>
         </div>
         <div class="two-col">
           <label>
-            <span>Location</span>
-            <input type="text" name="location" placeholder="Nairobi, Kenya">
+            <span data-t="lLoc">Location</span>
+            <input type="text" name="location" data-p="pLoc" placeholder="Nairobi, Kenya" maxlength="80">
           </label>
           <label>
-            <span>Status</span>
-            <select name="status">
-              <option value="available">Available</option>
-              <option value="almost_out">Almost out</option>
-              <option value="paused">Paused</option>
-              <option value="sold">Sold</option>
-            </select>
+            <span data-t="lStatus">Status</span>
+            <div class="status-row">
+              <select name="status" id="sfStatus">
+                <option value="available" data-t="sAvail">Available</option>
+                <option value="almost_out" data-t="sAlmost">Almost out</option>
+                <option value="paused" data-t="sPaused">Paused</option>
+                <option value="sold" id="soldOpt" data-t="sSold">Sold out</option>
+              </select>
+              <span id="statusPrev" aria-hidden="true"></span>
+            </div>
+            <small class="hint" data-t="hStatus">The colour follows your choice: green is available, yellow is almost out, grey is paused.</small>
           </label>
         </div>
+        <p class="warn" id="soldWarn" role="alert" hidden data-t="soldWarn">Sold out removes this listing automatically when you save. It will no longer show to buyers.</p>
+
         <label>
-          <span class="label-row">Description
-            <button class="btn ai" type="button" id="autowriteBtn" title="Write the title and description from the details above"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg><span class="btn-label">Auto-write</span></button>
+          <span class="label-row"><span data-t="lDesc">Description</span>
+            <button class="btn ai" type="button" id="autowriteBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg><span class="btn-label" data-t="bAuto">Auto-write</span></button>
           </span>
-          <textarea name="description" rows="4" placeholder="Freshly harvested produce, suitable for wholesale buyers. Or fill in the details above and press Auto-write."></textarea>
-          <small class="hint">Auto-write uses only the details you entered. Check it before saving. Your draft is saved on this device as you type.</small>
+          <textarea name="description" rows="4" data-p="pDesc" placeholder="Freshly harvested produce, suitable for wholesale buyers. Or fill in the details above and press Auto-write." maxlength="2000"></textarea>
+          <small class="hint" data-t="hDesc">Auto-write uses only the details you entered. Check it before saving. Your draft is saved on this device as you type.</small>
         </label>
+
+        <fieldset class="photos" id="photoBox">
+          <legend data-t="lPhotos">Photos</legend>
+          <p class="hint" id="photoCount" aria-live="polite"></p>
+          <div class="pgrid" id="pgrid"></div>
+          <label class="btn ghost addph" id="addPhotoBtn">
+            <input type="file" id="photoInput" class="sr-only" accept="image/*" multiple>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>
+            <span data-t="bAddPhotos">Add photos</span>
+          </label>
+          <p class="hint msg" id="photoMsg" role="status" aria-live="polite"></p>
+        </fieldset>
+
         <div class="form-actions">
-          <button class="btn primary" type="submit" id="sfSubmit">Save listing</button>
-          <a class="btn ghost" href="#/dashboard">Cancel</a>
-          <button class="btn danger" type="button" id="sfDelete" hidden>Delete listing</button>
+          <button class="btn primary" type="submit" id="sfSubmit" data-t="bSave">Save listing</button>
+          <a class="btn ghost" href="#/dashboard" data-t="bCancel">Cancel</a>
+          <button class="btn danger" type="button" id="sfDelete" hidden data-t="bDelete">Delete listing</button>
         </div>
       </form>
     </div>

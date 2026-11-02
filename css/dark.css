@@ -1,0 +1,48 @@
+/* Dark theme: a layered forest palette (not one flat green).
+   Loaded last in every shadow root and sets the tokens each view reads, so every page shares the same dark look.
+   Deep pine for the page, spruce and fern for cards, emerald for actions, mint for text accents, lime for highlights. */
+:host([data-theme="dark"]){
+  --g50:#ecfdf5;--g100:#d1fae5;--g200:#a7f3d0;--g300:#6ee7b7;--g400:#34d399;--g500:#10b981;--g600:#08805a;--g700:#076a4a;--g800:#0b4d3a;--g900:#0a3a2c;--g950:#04100a;
+  --lime:#bef264;--teal:#2dd4bf;--moss:#a3b18a;
+  --bg:#06130d;--white:#0a1d15;--soft:#0a1f16;--surf:#0f2a1f;--surf2:#153628;--field:#081a12;
+  --ink:#eefaf2;--mute:#9fc7b0;--line:#1c4a37;--line2:#27694c;
+  --accent:#6ee7b7;--pill-bg:#0e3a2b;--pill-ink:#a7f3d0;--soft-ink:#a7f3d0;--ok-bg:#0e3a2b;--ok-ink:#a7f3d0;
+  --user:#08805a;--map:#0b2218;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px rgba(0,0,0,.35);--sh1:0 1px 2px rgb(0 0 0/.4);--sh2:0 24px 60px rgb(0 0 0/.5);
+  --blue1:#10264a;--amber1:#33260f;
+  color-scheme:dark
+}
+@media(prefers-color-scheme:dark){:host(:not([data-theme="light"])){
+  --g50:#ecfdf5;--g100:#d1fae5;--g200:#a7f3d0;--g300:#6ee7b7;--g400:#34d399;--g500:#10b981;--g600:#08805a;--g700:#076a4a;--g800:#0b4d3a;--g900:#0a3a2c;--g950:#04100a;
+  --lime:#bef264;--teal:#2dd4bf;--moss:#a3b18a;
+  --bg:#06130d;--white:#0a1d15;--soft:#0a1f16;--surf:#0f2a1f;--surf2:#153628;--field:#081a12;
+  --ink:#eefaf2;--mute:#9fc7b0;--line:#1c4a37;--line2:#27694c;
+  --accent:#6ee7b7;--pill-bg:#0e3a2b;--pill-ink:#a7f3d0;--soft-ink:#a7f3d0;--ok-bg:#0e3a2b;--ok-ink:#a7f3d0;
+  --user:#08805a;--map:#0b2218;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px rgba(0,0,0,.35);--sh1:0 1px 2px rgb(0 0 0/.4);--sh2:0 24px 60px rgb(0 0 0/.5);
+  --blue1:#10264a;--amber1:#33260f;
+  color-scheme:dark
+}}
+
+/* A soft glow in the page background so the dark theme has depth */
+:host([data-theme="dark"]){background:radial-gradient(1100px 520px at 12% -8%,rgba(16,185,129,.13),transparent 60%),radial-gradient(900px 480px at 100% 0%,rgba(45,212,191,.08),transparent 55%),var(--bg)}
+
+/* Focus is mint so it is visible on every surface */
+:host([data-theme="dark"]) :focus-visible{outline-color:var(--g300)}
+
+/* Primary actions: emerald to teal, and they lift on hover */
+:host([data-theme="dark"]) .btn.pri,:host([data-theme="dark"]) .btn.primary,:host([data-theme="dark"]) .btn.blue-fill,:host([data-theme="dark"]) .send{background:linear-gradient(135deg,#0d9668,#08805a 55%,#0f766e);color:#fff;border-color:transparent}
+:host([data-theme="dark"]) .btn.pri:hover,:host([data-theme="dark"]) .btn.primary:hover{background:linear-gradient(135deg,#10b981,#0d9668 55%,#14998d);box-shadow:0 8px 26px rgba(16,185,129,.35)}
+:host([data-theme="dark"]) .btn.ai{background:linear-gradient(135deg,#0b4d3a,#0f766e);color:#fff}
+:host([data-theme="dark"]) .btn.ai .ic{color:var(--lime)}
+:host([data-theme="dark"]) .btn.ghost,:host([data-theme="dark"]) .btn.outline{border-color:var(--line2);color:var(--ink);background:transparent}
+:host([data-theme="dark"]) .btn.ghost:hover,:host([data-theme="dark"]) .btn.outline:hover{border-color:var(--g300);background:rgba(110,231,183,.08)}
+
+/* Cards: layered surfaces that light up with a mint edge on hover */
+:host([data-theme="dark"]) :is(.card,.it,.listing-card,.plan,.tc,.stat-box,.panel-card,.transport-card,.li,.nitem,.feature-box,.kpi,.role-card){background-color:var(--surf);border-color:var(--line);transition:border-color .25s,box-shadow .25s,transform .25s,background-color .25s}
+:host([data-theme="dark"]) :is(.card,.it,.listing-card,.plan,.tc,.stat-box,.transport-card,.li,.feature-box,.kpi):hover{border-color:var(--g400);box-shadow:0 0 0 1px rgba(52,211,153,.35),0 14px 40px rgba(16,185,129,.16)}
+:host([data-theme="dark"]) :is(.price,.pr,.rate,.amt){color:var(--g300)}
+:host([data-theme="dark"]) a:not(.btn):not([class*="action"]):hover{color:var(--lime)}
+:host([data-theme="dark"]) :is(input,select,textarea):focus{border-color:var(--g400);box-shadow:0 0 0 4px rgba(52,211,153,.18)}
+:host([data-theme="dark"]) .pill,:host([data-theme="dark"]) .tag,:host([data-theme="dark"]) .km{background:var(--pill-bg);color:var(--pill-ink)}
+:host([data-theme="dark"]) hr{border-color:var(--line)}

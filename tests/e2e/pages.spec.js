@@ -4,17 +4,18 @@ const { view, login, watchErrors } = require('./helpers');
 
 const PAGES = [
   { hash: '#/home', view: 'home', heading: /Sell your harvest/i },
-  { hash: '#/map', view: 'map', heading: /near you/i },
+  { hash: '#/map', view: 'map', heading: /^Map$/ },
   { hash: '#/ai', view: 'ai', heading: /Ask Mkulima AI/i },
   { hash: '#/login', view: 'auth', heading: /Welcome back/i },
   { hash: '#/signup', view: 'auth', heading: /Create your account/i },
-  { hash: '#/seller-form', view: 'seller-form', heading: /Post a fresh produce listing/i },
-  { hash: '#/transporter-form', view: 'transporter-form', heading: /Offer a transport route/i }
+  { hash: '#/seller-form', view: 'seller-form', heading: /Post a fresh produce listing/i, as: 'seller' },
+  { hash: '#/transporter-form', view: 'transporter-form', heading: /Offer a transport route/i, as: 'transporter' }
 ];
 
 for (const p of PAGES) {
   test(`page ${p.hash} renders cleanly`, async ({ page }) => {
     const errors = watchErrors(page);
+    if (p.as) await login(page, p.as);
     await page.goto('/' + p.hash);
     const v = view(page, p.view);
     await expect(v).toBeVisible();
@@ -36,9 +37,8 @@ test('dashboard shows the signed-in seller and their demo listings', async ({ pa
   await login(page, 'seller');
   await page.goto('/#/dashboard');
   const d = view(page, 'dashboard');
-  await expect(d.locator('#profileName')).toHaveText('John Kamau');
+  await expect(d.locator('#dashGreeting')).toContainText('John');
   await expect(d.locator('#listingGrid .listing-card')).toHaveCount(3);
-  await expect(d.locator('#listingGrid .demo').first()).toBeVisible();
 });
 
 test('mobile menu opens and navigates', async ({ page, isMobile }) => {
@@ -56,6 +56,7 @@ test.describe('dark mode readability', () => {
   test.use({ colorScheme: 'dark' });
   for (const p of PAGES) {
     test(`text is readable in dark mode on ${p.hash}`, async ({ page }) => {
+      if (p.as) await login(page, p.as);
       await page.goto('/' + p.hash);
       await expect(view(page, p.view)).toBeVisible();
       const worst = await page.evaluate((id) => {
@@ -97,5 +98,5 @@ test('landing page shows live listings and switches to Kiswahili', async ({ page
   if (isMobile) await page.getByRole('button', { name: 'Menu' }).click(); // language switch lives in the mobile menu
   await page.locator('#sl2').click(); // global language switch
   await expect(h.locator('h1')).toContainText('Uza mavuno yako');
-  await expect(page.locator('#sl a[data-k="map"]')).toHaveText('Usafiri');
+  await expect(page.locator('#sl a[data-k="map"]')).toHaveText('Ramani');
 });

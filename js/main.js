@@ -3,18 +3,19 @@
 (async function () {
   var V = document.documentElement.dataset.v;
   var q = V && V.indexOf("{{") < 0 ? "?v=" + V : "";
-  var views = ["home", "map", "ai", "auth", "dashboard", "seller-form", "transporter-form"];
+  var views = ["home", "map", "ai", "auth", "dashboard", "seller-form", "transporter-form", "profile", "listing"];
   window.__r = {};
   await Promise.all(views.map(async function (k) {
     var cssFile = k === 'seller-form' || k === 'transporter-form' ? 'forms.css' : k + '.css';
     var res = await fetch("/partials/" + k + ".html" + q);
     var host = document.getElementById("v-" + k);
     var root = host.attachShadow({ mode: "open" });
-    root.innerHTML = '<link rel="stylesheet" href="/css/' + cssFile + q + '">' + (await res.text());
+    // common.css (shared atoms) first, then the view's own CSS, then dark.css (the shared dark theme) so it wins.
+    root.innerHTML = '<link rel="stylesheet" href="/css/common.css' + q + '"><link rel="stylesheet" href="/css/' + cssFile + q + '"><link rel="stylesheet" href="/css/dark.css' + q + '">' + (await res.text());
     window.__r[k] = root;
   }));
   function load(src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src + q; s.onload = ok; s.onerror = no; document.body.appendChild(s); }); }
-  for (var s of ["/js/pages/home.js", "/js/pages/map.js", "/js/pages/ai.js", "/js/pages/auth.js", "/js/pages/dashboard.js", "/js/pages/forms.js", "/js/shell.js"]) await load(s);
+  for (var s of ["/js/pages/home.js", "/js/pages/map.js", "/js/pages/ai.js", "/js/pages/auth.js", "/js/pages/dashboard.js", "/js/pages/forms.js", "/js/pages/profile.js", "/js/pages/listing.js", "/js/shell.js"]) await load(s);
 })();
 
 /* Progressive Web App: offline cache + "Install app" button */

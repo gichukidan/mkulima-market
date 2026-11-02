@@ -397,3 +397,26 @@ h3{font-size:21px;font-weight:700}
   .mini-prof{bottom:0}.badge-cta .amt{font-size:32px}.faq summary{font-size:17px;padding:18px}.faq p{padding:0 18px 18px}
   .pv.banner{grid-template-columns:1fr}
 }
+
+/* Marketplace cards: whole-card link, status pill, counts, sponsored */
+a.card{text-decoration:none;color:inherit}
+a.card:focus-visible{outline:3px solid var(--g400);outline-offset:3px;border-radius:var(--r)}
+.card .stp{position:absolute;top:12px;left:12px}
+.card .spon,.adc .spon{align-self:flex-start;font:800 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;border-radius:999px;background:var(--amber1);color:var(--amber)}
+.card .seller{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+.card .seller .sn{min-width:0;overflow-wrap:anywhere}
+.cstats{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--mute)}
+.cs{display:inline-flex;align-items:center;gap:4px}
+.cs .ic{width:15px;height:15px}
+.card .vb{width:1.1em;height:1.1em}
+
+/* Sponsored adverts strip */
+.ads{margin:20px 0 22px}
+.ads-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.adc{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;min-height:44px;padding:14px 16px;border-radius:var(--r);border:1px dashed var(--amber);background:var(--surf);color:var(--ink);font:500 15px/1.4 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.adc:hover{transform:translateY(-2px);box-shadow:var(--sh1)}
+.adc b{font-size:16px;font-weight:800}
+.adc .adb{color:var(--mute);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.adc small{color:var(--mute);font-weight:700}
+
+.renew{margin:18px 0 0;font-size:15px;font-weight:600;color:var(--mute);max-width:56ch}

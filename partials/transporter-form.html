@@ -8,46 +8,48 @@
       <form id="transporterForm" class="stack-form">
         <div class="two-col">
           <label>
-            <span>Route name</span>
-            <input type="text" name="routeName" placeholder="Nakuru to Nairobi" required>
+            <span data-t="lName">Route name</span>
+            <input type="text" name="routeName" data-p="pName" placeholder="Nakuru to Nairobi" required maxlength="100">
           </label>
           <label>
-            <span>Vehicle</span>
-            <input type="text" name="vehicle" placeholder="Truck / van / pickup" required>
-          </label>
-        </div>
-        <div class="two-col">
-          <label>
-            <span>Origin</span>
-            <input type="text" name="origin" placeholder="Nakuru" required>
-          </label>
-          <label>
-            <span>Destination</span>
-            <input type="text" name="destination" placeholder="Nairobi" required>
+            <span data-t="lVehicle">Vehicle</span>
+            <input type="text" name="vehicle" data-p="pVehicle" placeholder="Truck / van / pickup" required maxlength="60">
           </label>
         </div>
         <div class="two-col">
           <label>
-            <span>Capacity (kg)</span>
-            <input type="number" name="capacityKg" min="1" step="0.1" placeholder="2500">
+            <span data-t="lOrigin">Origin</span>
+            <input type="text" name="origin" list="townList" data-p="pOrigin" placeholder="Nakuru" required maxlength="80" autocomplete="off">
           </label>
           <label>
-            <span>Rate (KSh per km)</span>
-            <input type="number" name="rate" min="1" step="1" placeholder="120" required>
+            <span data-t="lDest">Destination</span>
+            <input type="text" name="destination" list="townList" data-p="pDest" placeholder="Nairobi" required maxlength="80" autocomplete="off">
+          </label>
+        </div>
+        <datalist id="townList"></datalist>
+        <small class="hint" data-t="hTown">Pick a town from the list to show your route on the map, or type any place.</small>
+        <div class="two-col">
+          <label>
+            <span data-t="lCap">Capacity (kg)</span>
+            <input type="number" name="capacityKg" min="1" step="0.1" placeholder="2500" inputmode="decimal">
+          </label>
+          <label>
+            <span data-t="lRate">Rate (KSh per km)</span>
+            <input type="number" name="rate" min="1" step="1" placeholder="120" required inputmode="numeric">
           </label>
         </div>
         <label>
-          <span>Service days</span>
-          <input type="text" name="serviceDays" placeholder="Mon - Sat">
+          <span data-t="lDays">Service days</span>
+          <input type="text" name="serviceDays" data-p="pDays" placeholder="Mon - Sat" maxlength="60">
         </label>
         <label>
-          <span>Description</span>
-          <textarea name="description" rows="4" placeholder="Reliable farm-to-market transport for fresh produce and grains."></textarea>
+          <span data-t="lDesc">Description</span>
+          <textarea name="description" rows="4" data-p="pDesc" placeholder="Reliable farm-to-market transport for fresh produce and grains." maxlength="2000"></textarea>
         </label>
         <div class="form-actions">
-          <button class="btn primary" type="submit" id="tfSubmit">Save route</button>
-          <a class="btn ghost" href="#/dashboard">Cancel</a>
-          <button class="btn danger" type="button" id="tfDelete" hidden>Delete route</button>
+          <button class="btn primary" type="submit" id="tfSubmit" data-t="bSave">Save route</button>
+          <a class="btn ghost" href="#/dashboard" data-t="bCancel">Cancel</a>
+          <button class="btn danger" type="button" id="tfDelete" hidden data-t="bDelete">Delete route</button>
         </div>
       </form>
     </div>

@@ -89,8 +89,14 @@ Older database: an account `seller@mkulima.test` / `demo123` was created automat
 | **Transport routes (CRUD)** | Create, view, edit, delete. Public list of routes. Indicative cost labelled as "not a quote" |
 | **Ask Mkulima AI** | Chat in English or Kiswahili. Searches live listings and nearby sellers, and uses the **knowledge base (RAG)** for advice. Shows its sources and never invents prices or sellers |
 | **Knowledge base (RAG)** | 11 starter guides (selling, safety, prices, post-harvest, transport) in English and Kiswahili, ranked with SQLite full-text search (BM25). Admins create, edit, unpublish and delete articles in `/admin` |
-| **Map** | Leaflet/OpenStreetMap, nearby sellers with approximate (about 1 km) locations, straight-line distances clearly labelled |
-| **Admin** | Users (change role, delete), listings (status, delete), routes (delete), knowledge base CRUD |
+| **Map** | Replaces the old "Transport" page. Used by sellers, buyers and transporters. OpenStreetMap basemap (Leaflet), approximate (about 1 km) positions, radius filter, transporter routes and quote requests, straight-line distances clearly labelled |
+| **Dashboard** | Only after login or sign-up. Seller statistics (listings, views, thumbs, 14-day chart) or transporter statistics (routes, quote requests), notifications, blue badge, adverts and sponsored listings |
+| **Profile** | "Hello, name", details, followers and following, suggested follows, and star ratings given manually by users after a transaction |
+| **Listing page** | Photos (limit set by plan: Free 5, Biashara 15, Agribusiness 30), automatic status colours (available green, almost out yellow), views count, thumbs up and thumbs down. Marking a listing sold out deletes it |
+| **Blue badge** | KSh 2,000, valid for 6 months and renewed every 6 months (not a one-time payment). The admin verifies it after an in-person visit and payment confirmation |
+| **Dark mode** | Several shades of green across every page |
+| **Bilingual** | English and Kiswahili on every page except the admin dashboard (English only) |
+| **Admin** | Overview statistics and sign-up chart, users (plan, grant or revoke blue badge, delete), blue badge requests, adverts and sponsored listings, listings, routes, ratings, knowledge base CRUD |
 | **Installable app (PWA)** | "Install app" button, home-screen icon, offline support for visited pages, update prompt when a new version is deployed |
 | **Languages** | **SW / EN** button in the top bar switches the whole site without leaving the page |
 
@@ -162,7 +168,13 @@ docs/MKULIMA_MARKET_PLAN.md  Full roadmap, research and test plan
 | `GET /api/nearby/sellers`, `POST /api/quote`, `GET /api/stats` | Anyone | Map, indicative quotes, landing counts |
 | `POST /api/ai`, `POST /api/ai/autowrite` (signed in) | Anyone / signed in | AI chat and Auto-write (rate limited) |
 | `GET /api/kb?q=`, `GET /api/kb/:id` | Anyone | Knowledge base search |
-| `/api/admin/*` incl. `/api/admin/kb` | Admin | Moderation and knowledge-base CRUD |
+| `GET/POST /api/listings/:id/images`, `POST /api/listings/:id/view`, `POST /api/listings/:id/vote` | Owner / anyone | Photos, views and thumbs |
+| `POST/DELETE /api/users/:id/follow`, `GET /api/users/suggestions`, `GET /api/profiles/:id`, `POST /api/users/:id/rate` | Signed in | Followers, profiles, ratings |
+| `GET /api/notifications`, `POST /api/notifications/read` | Signed in | Notifications |
+| `GET /api/badge/me`, `POST /api/badge/request` | Signed in | Blue badge (KSh 2,000 per 6 months) |
+| `/api/adverts`, `GET /api/adverts/active`, `POST /api/quote-requests`, `GET /api/dashboard/stats` | Signed in / anyone | Adverts, sponsored listings, quotes, dashboard |
+| `GET /api/market/insights`, `GET /api/map/data` | Anyone | Insights from live asking prices, map data |
+| `/api/admin/*` incl. `/api/admin/kb`, `/badges`, `/adverts`, `/ratings`, `/stats` | Admin | Moderation, badges, adverts, knowledge-base CRUD |
 
 ---
 
@@ -186,6 +198,15 @@ docs/MKULIMA_MARKET_PLAN.md  Full roadmap, research and test plan
 
 **New**
 - Full CRUD (see section 3), Ask Mkulima AI on Gemini with RAG knowledge base and sources, Auto-write, demo seed data, installable PWA with offline support, multi-layer caching, redesigned landing page with real Kenyan market photos, and Playwright test suite (55 tests).
+
+---
+
+**Latest update**
+- Home button in the navbar; Transport is now **Map** with an OpenStreetMap basemap.
+- Mkulima AI: the prompt bar is its own card, with image and voice attachments. Market insights are computed only from live listings (no invented data).
+- Blue badge: KSh 2,000 renewed every 6 months. Payment is not integrated: the admin confirms payment and verification.
+- New dashboard, profile and listing pages; adverts and sponsored listings (prices are agreed with the admin, none are hard-coded); notifications; admin dashboard.
+- No sample data was added. Existing demo seed data is unchanged.
 
 ---
 
