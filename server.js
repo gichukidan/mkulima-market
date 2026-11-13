@@ -1,13 +1,14 @@
 const express = require('express');
 const session = require('express-session');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const compression = require('compression');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const createDatabase = require('./lib/db');
 
 // Load .env if present (built into Node 20.12+). Variables already set in the environment win.
 try { process.loadEnvFile(path.join(__dirname, '.env')); } catch (e) { /* no .env file */ }
@@ -15,8 +16,9 @@ try { process.loadEnvFile(path.join(__dirname, '.env')); } catch (e) { /* no .en
 const app = express();
 const IS_PROD = process.env.NODE_ENV === 'production';
 const PORT = process.env.PORT || 3000;
+const db = createDatabase();
+const USING_POSTGRES = !!process.env.DATABASE_URL;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'mkulima.db');
-const db = new sqlite3.Database(DB_PATH);
 
 // ---- Secrets: never hardcoded ----
 let SESSION_SECRET = process.env.SESSION_SECRET;
@@ -186,6 +188,40 @@ app.use(session({
   }
 }));
 
+const JWT_SECRET = process.env.JWT_SECRET || SESSION_SECRET || 'mkulima-development-secret';
+
+function setSessionCookie(res, payload) {
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  res.cookie('mkulima_token', token, {
+    httpOnly: true,
+    secure: IS_PROD,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+  return token;
+}
+
+function clearSessionCookie(res) {
+  res.clearCookie('mkulima_token');
+}
+
+function getSessionToken(req) {
+  if (req.cookies && req.cookies.mkulima_token) return req.cookies.mkulima_token;
+  const raw = req.headers && req.headers.cookie ? String(req.headers.cookie) : '';
+  const match = raw.match(/(?:^|;\s*)mkulima_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function getSessionUser(req) {
+  const token = getSessionToken(req);
+  if (!token) return null;
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    return null;
+  }
+}
+
 // API responses are not cached by browsers or proxies unless a route says otherwise.
 app.use('/api', (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -211,30 +247,15 @@ function validLatLng(lat, lng) {
 }
 
 function run(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve({ id: this.lastID, changes: this.changes });
-    });
-  });
+  return db.run(sql, params);
 }
 
 function all(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, function (err, rows) {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+  return db.all(sql, params);
 }
 
 function get(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, function (err, row) {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+  return db.get(sql, params);
 }
 
 // Knowledge base (RAG source for Ask Mkulima AI)
@@ -320,12 +341,10 @@ async function initDatabase() {
   await ensureColumn('routes', 'pickup_lng', 'REAL');
   await ensureColumn('routes', 'dest_lat', 'REAL');
   await ensureColumn('routes', 'dest_lng', 'REAL');
-  // Seeded demonstration rows are flagged so the UI can label them "Demo".
   await ensureColumn('users', 'is_demo', 'INTEGER DEFAULT 0');
   await ensureColumn('listings', 'is_demo', 'INTEGER DEFAULT 0');
   await ensureColumn('routes', 'is_demo', 'INTEGER DEFAULT 0');
 
-  // Faster reads: write-ahead log and indexes for the common lookups.
   await run('PRAGMA journal_mode = WAL');
   await run('PRAGMA synchronous = NORMAL');
   await run('PRAGMA foreign_keys = ON');
@@ -346,11 +365,29 @@ function haversineKm(a,b,c,d){
 }
 
 function requireAuth(req, res, next) {
-  if (!req.session.userId) return res.status(401).json({ error: 'Unauthorized' });
+  const jwtUser = getSessionUser(req);
+  if (jwtUser && jwtUser.userId) {
+    req.session = req.session || {};
+    req.session.userId = jwtUser.userId;
+    req.session.user = jwtUser.user || null;
+    req.session.isAdmin = !!jwtUser.isAdmin;
+    req.session.adminEmail = jwtUser.adminEmail || null;
+    return next();
+  }
+
+  if (!req.session || !req.session.userId) return res.status(401).json({ error: 'Unauthorized' });
   next();
 }
 
 function requireAdmin(req, res, next) {
+  const jwtUser = getSessionUser(req);
+  if (jwtUser && jwtUser.isAdmin) {
+    req.session = req.session || {};
+    req.session.isAdmin = true;
+    req.session.adminEmail = jwtUser.adminEmail || null;
+    return next();
+  }
+
   if (req.session && req.session.isAdmin) return next();
   return res.status(401).json({ error: 'Admin access required' });
 }
