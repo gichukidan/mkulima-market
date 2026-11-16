@@ -1148,9 +1148,12 @@ async function start() {
     db.close();
     return;
   }
-  app.listen(PORT, () => {
-    console.log(`Mkulima Market running on http://localhost:${PORT}`);
-  });
+
+  if (process.env.VERCEL !== '1' && process.env.VERCEL_ENV !== 'production') {
+    app.listen(PORT, () => {
+      console.log(`Mkulima Market running on http://localhost:${PORT}`);
+    });
+  }
 }
 
 if (require.main === module) {
@@ -1161,3 +1164,10 @@ if (require.main === module) {
 }
 
 module.exports = app;
+module.exports.start = start;
+module.exports.initDatabase = initDatabase;
+module.exports.ensureServerStarted = async function ensureServerStarted() {
+  if (process.env.VERCEL === '1' || process.env.VERCEL_ENV) {
+    await start();
+  }
+};
